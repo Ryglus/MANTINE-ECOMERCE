@@ -17,3 +17,9 @@
 - [generouted](https://github.com/oedotme/generouted)
 - [Zusand](https://github.com/pmndrs/zustand)
 - [Tailwind](https://tailwindcss.com)
+
+## API
+
+mkdir api
+cd api
+git clone https://github.com/keikaavousi/fake-store-api
