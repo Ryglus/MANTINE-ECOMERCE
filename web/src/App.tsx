@@ -5,7 +5,7 @@ export default function App() {
   const Routes = useRoutes(routes);
 
   return (
-      <div className="relative h-full overflow-hidden">
+      <div>
         {Routes}
       </div>
   );
