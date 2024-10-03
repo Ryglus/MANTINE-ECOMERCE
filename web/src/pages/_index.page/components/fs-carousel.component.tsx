@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Image } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 // @ts-ignore
 import slide1 from '../assets/images/slide1.webp'
@@ -8,7 +9,7 @@ import slide2 from '../assets/images/slide2.webp'
 // @ts-ignore
 import slide3 from '../assets/images/slide3.webp'
 
-export default function FsCarousel() {
+export default function FullScreenCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const slides = [
@@ -49,26 +50,49 @@ export default function FsCarousel() {
             <button
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
                 onClick={prevSlide}
+                aria-label="Previous Slide"
             >
-                ❮
+                <IconChevronLeft size={24} />
             </button>
             <button
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
                 onClick={nextSlide}
+                aria-label="Next Slide"
             >
-                ❯
+                <IconChevronRight size={24} />
             </button>
 
-            {/* Indicators */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                {slides.map((_, index) => (
-                    <div
-                        key={index}
-                        className={`w-3 h-3 rounded-full ${
-                            index === currentIndex ? 'bg-white' : 'bg-gray-500'
-                        }`}
-                    />
-                ))}
+            {/* Improved Indicators */}
+            <div className="absolute bottom-14 lg:bottom-8 left-1/2 transform -translate-x-1/2 flex z-10 gap-2 items-center">
+                {/* Previous Arrow */}
+                <button
+                    className="p-2 cursor-pointer rounded-full"
+                    onClick={prevSlide}
+                    aria-label="Previous Slide"
+                >
+                    <IconChevronLeft size={24} />
+                </button>
+
+                {/* Indicators */}
+                <div className="py-2.5 px-6 rounded-full bg-opacity-50 bg-white flex gap-2">
+                    {slides.map((_, index) => (
+                        <span
+                            key={index}
+                            className={`w-3 h-3 rounded-full ${
+                                index === currentIndex ? 'bg-gray-900' : 'bg-gray-400'
+                            }`}
+                        />
+                    ))}
+                </div>
+
+                {/* Next Arrow */}
+                <button
+                    className="p-2 cursor-pointer rounded-full"
+                    onClick={nextSlide}
+                    aria-label="Next Slide"
+                >
+                    <IconChevronRight size={24} />
+                </button>
             </div>
         </div>
     );
