@@ -4,10 +4,9 @@ import { IconShoppingCart, IconUser } from '@tabler/icons-react';
 
 export default function PageHeader() {
     return (
-        <header className="absolute top-0 left-0 w-full p-4 mx-auto">
+        <header className="fixed top-0 left-0 w-full p-4 mx-auto z-50">
             <Group className="max-w-screen-xl mx-auto bg-white rounded-xl shadow-md relative z-10 p-4">
 
-                {/* Left side - Logo */}
                 <Group>
                     <Link to="/">
                         <div className="w-[100px] h-[100px] flex items-center justify-center z-20 relative -mt-10 -mb-10">
@@ -22,7 +21,6 @@ export default function PageHeader() {
                     </Link>
                 </Group>
 
-                {/* Center - Navigation Links (Aligned to the right) */}
                 <Group className="hidden md:flex ml-auto">
                     <Link to="/shop" className="text-gray-700 hover:text-gray-900 font-medium">
                         Shop
@@ -33,9 +31,7 @@ export default function PageHeader() {
                     </Link>
                 </Group>
 
-                {/* Right side - CTA and Icons (Aligned to the right) */}
                 <Group className="ml-4">
-                    {/* CTA Button */}
                     <Button
                         component={Link}
                         to="/order"
@@ -50,12 +46,10 @@ export default function PageHeader() {
                         </Group>
                     </Button>
 
-                    {/* User Icon */}
                     <ActionIcon component={Link} to="/account">
                         <IconUser size={24} />
                     </ActionIcon>
 
-                    {/* Cart Icon */}
                     <ActionIcon component={Link} to="/cart">
                         <IconShoppingCart size={24} />
                     </ActionIcon>

@@ -1,13 +1,12 @@
-import PageHeader from "../components/page-header.component.tsx";
 import FsCarousel from "./_index.page/components/fs-carousel.component.tsx";
+import ProductShowcase from "./_index.page/components/product-showcase.component.tsx";
+import MainLayout from "../layouts/index-layout.tsx";
 
 export default function Page() {
     return (
-        <div > {/* Full height flex container */}
+        <MainLayout>
             <FsCarousel/>
-            <PageHeader />
-
-
-        </div>
+            <ProductShowcase/>
+        </MainLayout>
     );
 }
