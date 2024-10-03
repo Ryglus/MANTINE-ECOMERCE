@@ -1,7 +1,7 @@
 # MANTINE-ECOMERCE
 ## fake-eshop
 
-### Pages
+### PAGES
 - mainpage
 - product detail
 - shopping cart
@@ -9,7 +9,7 @@
 - order success
 - order history
 
-### Tech stack
+### TECH STACK
 
 - [Vite](https://vitejs.dev/)
 - [API](https://fakestoreapi.com/)
@@ -23,3 +23,20 @@
 mkdir api
 cd api
 git clone https://github.com/keikaavousi/fake-store-api
+
+## PROJECT STRUCTURE
+
+- /public
+  - favicon
+  - logo
+
+- /src
+  - /components - reusable UI components
+  - /layouts
+  - /hooks
+  - /lib
+  - /pages
+
+
+### notes
+- **tms-mae - header** je component, ostatní projekty to mají jako layout? 
