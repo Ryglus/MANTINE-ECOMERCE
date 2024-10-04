@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Carousel, Embla } from '@mantine/carousel';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import {useCallback, useEffect, useState} from "react";
+import {Carousel, Embla} from "@mantine/carousel";
+import {IconChevronLeft, IconChevronRight} from "@tabler/icons-react";
 
 // @ts-ignore
 import slide1 from '../_assets/images/slide1.webp';
@@ -8,6 +8,7 @@ import slide1 from '../_assets/images/slide1.webp';
 import slide2 from '../_assets/images/slide2.webp';
 // @ts-ignore
 import slide3 from '../_assets/images/slide3.webp';
+
 
 export default function FsCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);

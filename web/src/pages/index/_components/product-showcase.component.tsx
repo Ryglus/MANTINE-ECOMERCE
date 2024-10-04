@@ -1,6 +1,5 @@
-import { Container, Loader } from "@mantine/core";
 import {useFetchProducts} from "../../../lib/api/product.api";
-
+import {Container, Loader} from "@mantine/core";
 
 
 export default function ProductShowcase() {

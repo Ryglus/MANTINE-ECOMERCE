@@ -1,10 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {createTheme, CSSVariablesResolver, MantineProvider} from "@mantine/core";
+import {createRoot} from "react-dom/client";
+import {StrictMode} from "react";
+import {BrowserRouter} from "react-router-dom";
 import App from './App.tsx'
 import './index.css'
-import {createTheme, CSSVariablesResolver, MantineProvider} from "@mantine/core";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+
+
 
 const queryClient = new QueryClient();
 
