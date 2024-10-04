@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx'
 import './index.css'
 import {createTheme, CSSVariablesResolver, MantineProvider} from "@mantine/core";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const theme = createTheme({
     autoContrast: true,
@@ -37,9 +40,11 @@ const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <BrowserRouter>
-          <MantineProvider forceColorScheme="dark" theme={theme} cssVariablesResolver={cssVariablesResolver}>
-              <App />
-          </MantineProvider>
+          <QueryClientProvider client={queryClient}>
+              <MantineProvider forceColorScheme="dark" theme={theme} cssVariablesResolver={cssVariablesResolver}>
+                  <App />
+              </MantineProvider>
+          </QueryClientProvider>
       </BrowserRouter>
   </StrictMode>,
 )
