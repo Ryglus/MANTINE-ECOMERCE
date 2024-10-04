@@ -1,4 +1,17 @@
 {
+  "compilerOptions": {
+    "strict": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/vite-env.d.ts"
+  ],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
