@@ -4,7 +4,7 @@ import ProductShopperLayout from "./products/_layout/product-shopper-layout";
 export default function Page() {
     return (
         <ProductShopperLayout>
-            <ProductShowcase/>
+            <ProductShowcase />
         </ProductShopperLayout>
     );
 }

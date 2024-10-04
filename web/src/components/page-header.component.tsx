@@ -8,7 +8,7 @@ export default function PageHeader() {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 100) {
+            if (window.scrollY > 150) {
                 setIsScrolled(true);
             } else {
                 setIsScrolled(false);

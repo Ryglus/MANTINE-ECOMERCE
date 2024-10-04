@@ -3,11 +3,13 @@
 
 ### PAGES
 - mainpage
+- products/categories
 - product detail
 - shopping cart
 - order details
 - order success
 - order history
+- account page
 
 ### TECH STACK
 
@@ -19,10 +21,7 @@
 - [Tailwind](https://tailwindcss.com)
 
 ## API
-
-mkdir api
-cd api
-git clone https://github.com/keikaavousi/fake-store-api
+https://github.com/keikaavousi/fake-store-api
 
 ## PROJECT STRUCTURE
 
@@ -39,4 +38,4 @@ git clone https://github.com/keikaavousi/fake-store-api
 
 
 ### notes
-- **tms-mae - header** je component, ostatní projekty to mají jako layout? 
+- **tms-mae - header** je component, ostatní projekty to mají jako layout?

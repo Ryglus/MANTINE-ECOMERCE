@@ -2,6 +2,7 @@ import { Container, Loader } from "@mantine/core";
 import {useFetchProducts} from "../../../lib/api/product.api";
 
 
+
 export default function ProductShowcase() {
     const { data: products, isLoading, error } = useFetchProducts();
 
