@@ -7,8 +7,6 @@ export type Path =
   | `/`
   | `/account`
   | `/cart`
-  | `/product-detail`
-  | `/products`
   | `/products/:category/:id`
 
 export type Params = {
