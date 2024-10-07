@@ -7,10 +7,10 @@ export type Path =
   | `/`
   | `/account`
   | `/cart`
-  | `/products/:category/:id`
+  | `/products/:category/:id/:slug`
 
 export type Params = {
-  '/products/:category/:id': { category: string; id: string }
+  '/products/:category/:id/:slug': { category: string; id: string; slug: string }
 }
 
 export type ModalPath = never

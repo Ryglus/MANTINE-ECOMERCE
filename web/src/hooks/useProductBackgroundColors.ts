@@ -1,24 +1,22 @@
 import { useState, useEffect } from "react";
-
-import {Product} from "../lib/api/dto/product.dto";
 import {getImageBackgroundColor} from "../utils/getImageBackgroundColor";
 
-export const useProductBackgroundColors = (products: Product[] | undefined) => {
+export const useProductBackgroundColors = (images: string[] | undefined) => {
     const [backgroundColors, setBackgroundColors] = useState<Record<number, string>>({});
 
     useEffect(() => {
-        if (products) {
-            const colorPromises = products.map(async (product) => {
-                const bgColor = await getImageBackgroundColor(product.image);
+        if (images) {
+            const colorPromises = images.map(async (imageUrl, index) => {
+                const bgColor = await getImageBackgroundColor(imageUrl);
                 setBackgroundColors((prev) => ({
                     ...prev,
-                    [product.id]: bgColor,
+                    [index]: bgColor,
                 }));
             });
 
             Promise.all(colorPromises);
         }
-    }, [products]);
+    }, [images]);
 
     return backgroundColors;
 };

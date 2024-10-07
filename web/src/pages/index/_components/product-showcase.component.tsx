@@ -6,7 +6,9 @@ import { useProductBackgroundColors } from "../../../hooks/useProductBackgroundC
 
 export default function ProductShowcase() {
     const { data: products, isLoading, error } = useFetchProducts();
-    const backgroundColors = useProductBackgroundColors(products);
+
+    const productImages = products?.map((product) => product.image) || [];
+    const backgroundColors = useProductBackgroundColors(productImages);
 
     if (isLoading) return <Loader />;
     if (error) return <div>Error fetching products</div>;
@@ -14,7 +16,7 @@ export default function ProductShowcase() {
     return (
         <Container className="mt-5 min-h-dvh">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products?.map((product) => (
+                {products?.map((product, index) => (
                     <Card
                         key={product.id}
                         shadow="md"
@@ -26,7 +28,7 @@ export default function ProductShowcase() {
                         <div
                             className="relative h-[300px] flex items-center justify-center overflow-hidden rounded-md"
                             style={{
-                                background: backgroundColors[product.id] || '#f5f5f5',
+                                background: backgroundColors[index] || '#f5f5f5',
                             }}
                         >
                             <Badge

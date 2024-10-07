@@ -6,7 +6,7 @@ export function slugify(str: string): string {
 }
 
 export function buildProductUrl(category: string, id: number, title: string): string {
-    return `/products/${slugify(category)}/${id}-${slugify(title)}`;
+    return `/products/${slugify(category)}/${id}/${slugify(title)}`;
 }
 
 export function extractProductIdFromSlug(slug: string): number | null {
