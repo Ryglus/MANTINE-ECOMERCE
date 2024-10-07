@@ -16,12 +16,10 @@ export const getImageBackgroundColor = (imageSrc: string): Promise<string> => {
             canvas.height = img.height;
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                // Extract color from the top-left pixel
                 ctx.drawImage(img, 0, 0);
                 const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
                 const bgColor = `rgb(${r}, ${g}, ${b})`;
 
-                // Cache the result for future calls
                 backgroundColorCache[imageSrc] = bgColor;
                 resolve(bgColor);
             } else {
