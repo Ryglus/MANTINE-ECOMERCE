@@ -10,7 +10,7 @@ const SvgTopPageBg: React.FC<SvgTopPageBgProps> = ({ color1, color2 }) => {
         <>
             <svg
                 id="wave"
-                style={{ transform: 'rotate(180deg)', transition: '0.3s',  width: '100vw',
+                style={{ transform: 'rotate(180deg)',  width: '100vw',
                     position: 'absolute',
                     top: 0,
                     left: 0,

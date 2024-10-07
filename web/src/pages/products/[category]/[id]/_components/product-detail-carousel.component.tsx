@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Carousel } from '@mantine/carousel';
-import { Image, Card } from '@mantine/core';
-import {useProductBackgroundColors} from "../../../../../hooks/useProductBackgroundColors";
+import { Image, Divider, Transition } from '@mantine/core';
+import ThumbnailCard from './_cards/thumbnail.card';
+import {useImageBackgroundColor} from "../../../../../hooks/useImageBackgroundColor";
 
 
 interface ProductDetailCarouselProps {
@@ -9,40 +10,60 @@ interface ProductDetailCarouselProps {
 }
 
 const ProductDetailCarousel: React.FC<ProductDetailCarouselProps> = ({ images }) => {
-    const backgroundColors = useProductBackgroundColors(images);
+    const [selectedSlide, setSelectedSlide] = useState(0);
+
+    // Handle duplicating images for testing when only one image is provided
+    const duplicatedImages = images.length === 1 ? Array(3).fill(images[0]) : images;
+
+    const backgroundColor = useImageBackgroundColor(duplicatedImages[selectedSlide]);
 
     return (
-        <Card shadow="md" radius="md" withBorder p="lg">
-            <Carousel
-                slideSize="100%"
-                height={400}
-                withIndicators
-                loop
-                className="product-carousel"
+        <>
+            <div
+                className="relative flex items-center justify-center overflow-hidden h-[400px] w-full rounded-xl"
+                style={{ background: backgroundColor || '#f5f5f5' }}
             >
-                {images.map((image, index) => (
-                    <Carousel.Slide key={index}>
-                        <div
-                            className="relative flex items-center justify-center overflow-hidden rounded-md"
-                            style={{
-                                background: backgroundColors[index] || '#f5f5f5',
-                                padding: '1rem',
-                            }}
-                        >
+                {duplicatedImages.map((image, index) => (
+                    <Transition
+                        key={index}
+                        mounted={selectedSlide === index}
+                        transition="fade"
+                        duration={500}
+                        timingFunction="ease"
+                    >
+                        {(styles) => (
                             <Image
                                 src={image}
                                 alt={`Product Image ${index + 1}`}
                                 fit="contain"
-                                className="object-contain h-full w-full"
-                                style={{
-                                    aspectRatio: '16 / 9',
-                                }}
+                                className="object-contain h-full w-full absolute"
+                                style={styles}
                             />
-                        </div>
+                        )}
+                    </Transition>
+                ))}
+            </div>
+
+            <Divider className="my-2" />
+
+            <Carousel
+                slideSize="20%"
+                withControls
+                align="start"
+                loop={false}
+                className={"rounded-md"}
+            >
+                {duplicatedImages.map((image, index) => (
+                    <Carousel.Slide key={index}>
+                        <ThumbnailCard
+                            image={image}
+                            isActive={selectedSlide === index}
+                            onClick={() => setSelectedSlide(index)}
+                        />
                     </Carousel.Slide>
                 ))}
             </Carousel>
-        </Card>
+        </>
     );
 };
 

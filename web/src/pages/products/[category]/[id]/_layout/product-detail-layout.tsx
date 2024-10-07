@@ -13,7 +13,7 @@ export default function ProductDetailLayout({ children }: IndexLayoutProps) {
         <>
             <PageHeader takeSpace={true} />
             <SvgTopPageBg color1={"#251D36ff"} color2={"#CBAB7Cff"}/>
-            <Container className="mt-5" >
+            <Container size={"lg"}>
                 {children}
             </Container>
         </>

@@ -1,19 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import { Product } from './dto/product.dto';
+import {useQuery} from '@tanstack/react-query';
+import {Product} from './dto/product.dto';
 
 const API_BASE_URL = 'https://fakestoreapi.com';
 
-// Fetch all products
 export const fetchProducts = async (): Promise<Product[]> => {
     const response = await fetch(`${API_BASE_URL}/products`);
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
-    const data: Product[] = await response.json();
-    return data;
+    return await response.json();
 };
 
-// Fetch a product by ID
 export const fetchProductById = async (productId: string): Promise<Product> => {
     const response = await fetch(`${API_BASE_URL}/products/${productId}`);
     if (!response.ok) {
@@ -22,7 +19,14 @@ export const fetchProductById = async (productId: string): Promise<Product> => {
     return response.json();
 };
 
-// Hook to fetch all products
+export const fetchProductsByCategory = async (category: string): Promise<Product[]> => {
+    const response = await fetch(`${API_BASE_URL}/products/category/${category}`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return await response.json();
+};
+
 export const useFetchProducts = () => {
     return useQuery<Product[], Error>({
         queryKey: ['products'],
@@ -30,10 +34,16 @@ export const useFetchProducts = () => {
     });
 };
 
-// Hook to fetch a product by ID
 export const useFetchProductById = (productId: string) => {
     return useQuery<Product, Error>({
         queryKey: ['product', productId],
         queryFn: () => fetchProductById(productId),
+    });
+};
+
+export const useFetchProductsByCategory = (category: string) => {
+    return useQuery<Product[], Error>({
+        queryKey: ['products', category],
+        queryFn: () => fetchProductsByCategory(category),
     });
 };

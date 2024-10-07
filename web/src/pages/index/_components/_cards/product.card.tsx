@@ -1,6 +1,6 @@
 import { Card, Badge, Group, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
-import {useImageBackgroundColor} from "../../../../hooks/useProductBackgroundColors";
+import {useImageBackgroundColor} from "../../../../hooks/useImageBackgroundColor";
 import {buildProductUrl} from "../../../../utils/urlBuilder";
 
 
