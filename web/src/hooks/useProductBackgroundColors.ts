@@ -1,22 +1,26 @@
 import { useState, useEffect } from "react";
-import {getImageBackgroundColor} from "../utils/getImageBackgroundColor";
+import { getImageBackgroundColor } from "../utils/getImageBackgroundColor";
 
-export const useProductBackgroundColors = (images: string[] | undefined) => {
-    const [backgroundColors, setBackgroundColors] = useState<Record<number, string>>({});
+export const useImageBackgroundColor = (imageUrl: string) => {
+    const [backgroundColor, setBackgroundColor] = useState<string | null>(null);
 
     useEffect(() => {
-        if (images) {
-            const colorPromises = images.map(async (imageUrl, index) => {
-                const bgColor = await getImageBackgroundColor(imageUrl);
-                setBackgroundColors((prev) => ({
-                    ...prev,
-                    [index]: bgColor,
-                }));
-            });
+        let isMounted = true;
 
-            Promise.all(colorPromises);
-        }
-    }, [images]);
+        getImageBackgroundColor(imageUrl).then((color) => {
+            if (isMounted) {
+                setBackgroundColor(color);
+            }
+        }).catch(() => {
+            if (isMounted) {
+                setBackgroundColor('#f5f5f5');
+            }
+        });
 
-    return backgroundColors;
+        return () => {
+            isMounted = false;
+        };
+    }, [imageUrl]);
+
+    return backgroundColor;
 };
