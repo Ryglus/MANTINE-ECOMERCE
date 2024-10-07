@@ -11,7 +11,7 @@ export default function PageHeader({ takeSpace = true }: PageHeaderProps) {
     const { isScrolled } = useScrollManager();
 
     const headerHeight = isScrolled ? 87 : 107;
-
+    //TODO: FIX PHONE IMAGE SIZE AND SIZING OVERALL IG
     return (
         <>
             {takeSpace && <div style={{ height: `${headerHeight + 32}px` }} />}

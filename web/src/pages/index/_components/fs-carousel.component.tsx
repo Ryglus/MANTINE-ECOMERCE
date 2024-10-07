@@ -17,7 +17,7 @@ export default function FsCarousel() {
     const [canScrollNext, setCanScrollNext] = useState(true);
     const [canScrollPrev, setCanScrollPrev] = useState(false);
 
-    //TODO:ADD LINKS TO SLIDES
+    //TODO:ADD LINKS TO SLIDES + responsivity
     const slides = [
         {
             id: 1,
