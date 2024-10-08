@@ -1,9 +1,9 @@
 import { useForm } from "@mantine/form";
 import { TextInput, PasswordInput, Button, Group, Paper, Title, Stack, Divider, Container } from '@mantine/core';
-import AccountLayout from "./_layout/account-layout";
 import { useLogin } from '../../lib/api/auth.api';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 import {useNavigate} from "react-router-dom";
+import MainLayout from "../../layouts/index-layout";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -16,14 +16,14 @@ const Login = () => {
         },
     });
 
-    const { mutate, isLoading, error } = useLogin();
+    const { mutate, isPending, error } = useLogin();
 
     const handleSubmit = (values: { username: string; password: string }) => {
         mutate(values);
     };
 
     return (
-        <AccountLayout>
+        <MainLayout>
             <Container size={"xl"}>
                 <Paper
                     shadow="md"
@@ -50,8 +50,8 @@ const Login = () => {
                                 {...form.getInputProps('password')}
                                 required
                             />
-                            <Button type="submit" fullWidth color="blue" mt="md" disabled={isLoading}>
-                                {isLoading ? 'Logging in...' : 'Login'}
+                            <Button type="submit" fullWidth color="blue" mt="md" disabled={isPending}>
+                                {isPending ? 'Logging in...' : 'Login'}
                             </Button>
                         </Stack>
                     </form>
@@ -76,7 +76,7 @@ const Login = () => {
                     </Group>
                 </Paper>
             </Container>
-        </AccountLayout>
+        </MainLayout>
     );
 };
 

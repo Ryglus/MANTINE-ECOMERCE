@@ -1,34 +1,39 @@
 import { Card, Group, Loader, Text, Title, Button, Container } from '@mantine/core';
-
-import AccountLayout from "../_layout/account-layout";
 import {useGetUserInfo} from "../../../lib/api/user.api";
+import {useAuthStore} from "../../../store/auth-store";
+import {useEffect} from "react";
+import MainLayout from "../../../layouts/index-layout";
 
 const AccountDetail = () => {
-    const { isSuccess, isLoading, isError } = useGetUserInfo();
-    const user = isSuccess;
-    console.log()
-    if (isLoading) {
+    const { mutate, isPending, isError } = useGetUserInfo();
+
+    const user = useAuthStore((state) => state.user);
+    useEffect(() => {
+        mutate(1)
+    }, [mutate]);
+
+    if (isPending) {
         return (
-            <AccountLayout>
+            <MainLayout>
                 <Container>
                     <Loader size="lg" />
                 </Container>
-            </AccountLayout>
+            </MainLayout>
         );
     }
 
     if (isError) {
         return (
-            <AccountLayout>
+            <MainLayout>
                 <Container>
-                    <Text color="red">Error fetching user details.</Text>
+                    <Text c="red">Error fetching user details.</Text>
                 </Container>
-            </AccountLayout>
+            </MainLayout>
         );
     }
 
     return (
-        <AccountLayout>
+        <MainLayout>
             <Container size="md" my="lg">
                 <Card shadow="md" radius="md" p="lg" withBorder>
                     <Title order={2} mb="lg">
@@ -61,7 +66,7 @@ const AccountDetail = () => {
 
                     <Group p="apart" grow mt="lg">
                         <Text size="lg" fw={500}>
-                            Address: {user?.address.street}, {user?.address.city}
+                            Address: {user?.address?.street}, {user?.address?.city}
                         </Text>
                     </Group>
 
@@ -70,7 +75,7 @@ const AccountDetail = () => {
                     </Button>
                 </Card>
             </Container>
-        </AccountLayout>
+        </MainLayout>
     );
 };
 

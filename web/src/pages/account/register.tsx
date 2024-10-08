@@ -1,8 +1,8 @@
 import { useForm } from '@mantine/form';
 import { TextInput, PasswordInput, Button, Group, Paper, Title, Stack, Divider, Container } from '@mantine/core';
-import AccountLayout from './_layout/account-layout';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 import {useNavigate} from "react-router-dom";
+import MainLayout from "../../layouts/index-layout";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Register = () => {
     });
 
     return (
-        <AccountLayout>
+        <MainLayout>
             <Container size="sm" my="xl">
                 <Paper
                     shadow="md"
@@ -88,7 +88,7 @@ const Register = () => {
                     </Group>
                 </Paper>
             </Container>
-        </AccountLayout>
+        </MainLayout>
     );
 };
 

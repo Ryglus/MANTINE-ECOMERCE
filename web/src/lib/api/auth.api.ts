@@ -12,7 +12,7 @@ const loginMutationFn = async (variables: LoginVariables): Promise<LoginResponse
 
 export const useLogin = () => {
     const setToken = useAuthStore((state) => state.setToken);
-    const mutation = useMutation<LoginResponse, Error, LoginVariables>({
+    return useMutation({
         mutationFn: loginMutationFn,
         onSuccess: (data) => {
             setToken(data.token);
@@ -22,12 +22,4 @@ export const useLogin = () => {
             console.error('Login failed:', error);
         }
     });
-
-    return {
-        mutate: mutation.mutate,
-        isLoading: mutation.status == "pending",
-        isSuccess: mutation.isSuccess,
-        isError: mutation.isError,
-        error: mutation.error,
-    };
 };

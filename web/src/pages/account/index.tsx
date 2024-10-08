@@ -1,9 +1,9 @@
-import { Button, Group, Text } from '@mantine/core';
+import { Button, Group } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from "../../store/auth-store";
-import AccountLayout from "./_layout/account-layout";
 import useAuthRedirect from "../../hooks/useAuthRedirect";
 import AccountDetail from "./_components/account-detail.component";
+import MainLayout from "../../layouts/index-layout";
 
 const AccountPage = () => {
     const token = useAuthStore((state) => state.token);
@@ -16,13 +16,11 @@ const AccountPage = () => {
         navigate('/account/login');
     };
 
-
     return (
-        <AccountLayout>
+        <MainLayout>
             {token && (
                 <div>
-                    <Text>Welcome, User!</Text>
-                    {/*<AccountDetail/>*/}
+                    <AccountDetail/>
                     <Group mt="md">
                         <Button color="red" onClick={handleLogout}>
                             Logout
@@ -30,7 +28,7 @@ const AccountPage = () => {
                     </Group>
                 </div>
             )}
-        </AccountLayout>
+        </MainLayout>
     );
 };
 

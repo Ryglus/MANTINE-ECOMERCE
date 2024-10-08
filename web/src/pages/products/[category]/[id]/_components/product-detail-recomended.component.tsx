@@ -1,4 +1,3 @@
-
 import { Loader, Text, Card, Group, Image, Badge } from "@mantine/core";
 import { Link } from "react-router-dom";
 import {useFetchProductsByCategory} from "../../../../../lib/api/product.api";
@@ -6,15 +5,15 @@ import {buildProductUrl} from "../../../../../utils/urlBuilder";
 
 
 interface ProductDetailRecommendedProps {
-    category: string | null;
-    currentProductId: number | null;
+    category: string;
+    currentProductId: number;
 }
 
 export default function ProductDetailRecommended({
                                                      category,
                                                      currentProductId,
                                                  }: ProductDetailRecommendedProps) {
-    //@ts-ignore
+
     const { data: products, isLoading, error } = useFetchProductsByCategory(category);
 
     if (isLoading) return <Loader />;

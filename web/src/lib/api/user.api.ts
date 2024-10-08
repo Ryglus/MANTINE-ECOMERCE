@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { User } from './dto/account.dto';
-
+import { useAuthStore } from '../../store/auth-store';
 const API_URL = 'https://fakestoreapi.com';
 
 const userInfoMutationFn = async (variables: number): Promise<User> => {
@@ -10,21 +10,14 @@ const userInfoMutationFn = async (variables: number): Promise<User> => {
 };
 
 export const useGetUserInfo = () => {
-    const mutation = useMutation<User, Error,1>({
+    const setUser = useAuthStore((state) => state.setUser);
+    return useMutation({
         mutationFn: userInfoMutationFn,
-        onSuccess: (data) => {
-            return data;
+        onSuccess: (user) => {
+            setUser(user);
         },
         onError: (error) => {
             console.error('Login failed:', error);
         }
     });
-
-    return {
-        mutate: mutation.mutate,
-        isLoading: mutation.status == "pending",
-        isSuccess: mutation.isSuccess,
-        isError: mutation.isError,
-        error: mutation.error,
-    };
 };
