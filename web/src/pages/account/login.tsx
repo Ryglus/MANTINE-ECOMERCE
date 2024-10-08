@@ -1,9 +1,9 @@
 import { useForm } from "@mantine/form";
 import { TextInput, PasswordInput, Button, Group, Paper, Title, Stack, Divider, Container } from '@mantine/core';
 import AccountLayout from "./_layout/account-layout";
-import { useLogin } from '../../lib/api/auth.api'; // Path to your login mutation
+import { useLogin } from '../../lib/api/auth.api';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
-import {useNavigate} from "react-router-dom"; // The hook we just created
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
     const navigate = useNavigate();
