@@ -7,10 +7,6 @@ export interface LoginVariables {
     password: string;
 }
 
-export interface GetUser {
-    id: number;
-}
-
 export interface User {
     id: number;
     email: string;

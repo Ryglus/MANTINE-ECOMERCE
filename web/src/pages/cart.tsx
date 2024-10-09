@@ -1,1 +1,0 @@
-//If logged in make it so the delivery is allready selected by the accouunts details
