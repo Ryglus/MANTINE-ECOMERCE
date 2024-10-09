@@ -3,10 +3,8 @@ import {createTheme, CSSVariablesResolver, MantineProvider} from "@mantine/core"
 import {createRoot} from "react-dom/client";
 import {StrictMode} from "react";
 import {BrowserRouter} from "react-router-dom";
-import App from './App.tsx'
+import App from './App'
 import './index.css'
-
-
 
 const queryClient = new QueryClient();
 
@@ -30,6 +28,7 @@ const theme = createTheme({
         }
     }
 });
+
 const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
     variables: {},
     dark: {
