@@ -1,7 +1,7 @@
 // Generouted, changes to this file will be overriden
 /* eslint-disable */
 
-import { components, hooks, utils } from '@generouted/react-router/client'
+import {components, hooks, utils} from '@generouted/react-router/client'
 
 export type Path =
   | `/`
@@ -9,10 +9,12 @@ export type Path =
   | `/account/login`
   | `/account/register`
   | `/cart`
-  | `/products/:category/:id/:slug`
+  | `/checkout/:step?`
+  | `/products/:category/:id/:slug?`
 
 export type Params = {
-  '/products/:category/:id/:slug': { category: string; id: string; slug: string }
+  '/checkout/:step?': { step?: string }
+  '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
 }
 
 export type ModalPath = never
