@@ -27,6 +27,14 @@ export const fetchProductsByCategory = async (category: string): Promise<Product
     return await response.json();
 };
 
+export const fetchCategories = async (): Promise<string[]> => {
+    const response = await fetch(`${API_BASE_URL}/products/categories`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return await response.json();
+};
+
 export const useFetchProducts = () => {
     return useQuery<Product[], Error>({
         queryKey: ['products'],
@@ -45,5 +53,12 @@ export const useFetchProductsByCategory = (category: string) => {
     return useQuery<Product[], Error>({
         queryKey: ['products', category],
         queryFn: () => fetchProductsByCategory(category),
+    });
+};
+
+export const useFetchCategories = () => {
+    return useQuery<string[], Error>({
+        queryKey: ['categories'],
+        queryFn: fetchCategories,
     });
 };

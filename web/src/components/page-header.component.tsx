@@ -12,7 +12,7 @@ import {
     Indicator,
     Text
 } from '@mantine/core';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {IconHome, IconLogout, IconPhone, IconShoppingCart, IconStorm, IconUser} from "@tabler/icons-react";
 import {useViewportSize} from '@mantine/hooks';
 import {useScrollManager} from '../hooks/useScrollManager';
@@ -24,7 +24,8 @@ interface PageHeaderProps {
 }
 
 export default function PageHeader({ takeSpace = true }: PageHeaderProps) {
-    const { isScrolled = false } = useScrollManager();
+    const { isScrolled } = useScrollManager();
+    const navigate = useNavigate();
     const token = useAuthStore((state) => state.token);
     const clearToken = useAuthStore((state) => state.clearAuth);
     const { width } = useViewportSize();
@@ -33,13 +34,14 @@ export default function PageHeader({ takeSpace = true }: PageHeaderProps) {
 
     const baseImageSize = isScrolled ? 110 : 130;
     const imageSize = isMobile ? baseImageSize * 0.9 : baseImageSize;
-    const headerHeight = isScrolled ? 110 : 130;
+    const headerHeight = isScrolled ? 110 : 120;
 
     const cartItems = useCartStore((state) => state.items);
     const uniqueItemsCount = cartItems.length;
 
     const handleLogout = () => {
         clearToken();
+        navigate("/");
     };
 
     return (

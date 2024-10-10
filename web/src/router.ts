@@ -11,10 +11,12 @@ export type Path =
   | `/cart`
   | `/checkout/:step?`
   | `/products/:category/:id/:slug?`
+  | `/products/:category?`
 
 export type Params = {
   '/checkout/:step?': { step?: string }
   '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
+  '/products/:category?': { category?: string }
 }
 
 export type ModalPath = never

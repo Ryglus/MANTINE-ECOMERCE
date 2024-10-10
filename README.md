@@ -2,14 +2,12 @@
 ## fake-eshop
 
 ### PAGES
-- mainpage
-- products/categories
-- product detail
-- shopping cart
-- order details
-- order success
-- order history
-- account page
+- mainpage +-
+- products/categories +-
+- product detail +-
+- shopping cart +-
+- checkout +-
+- account page +-
 
 ### TECH STACK
 
@@ -38,4 +36,9 @@ https://github.com/keikaavousi/fake-store-api
 
 
 ### notes
-- **tms-mae - header** je component, ostatní projekty to mají jako layout?
+- fix products
+- create products/category page
+- footer?
+- colors
+- improove cart/checkout
+- search bar

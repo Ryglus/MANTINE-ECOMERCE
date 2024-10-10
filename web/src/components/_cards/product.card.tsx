@@ -1,8 +1,7 @@
-import { Card, Badge, Group, Text } from "@mantine/core";
-import { Link } from "react-router-dom";
-import {useImageBackgroundColor} from "../../../../hooks/useImageBackgroundColor";
-import {buildProductUrl} from "../../../../utils/urlBuilder";
-
+import {Badge, Card, Center, Stack, Text} from "@mantine/core";
+import {Link} from "react-router-dom";
+import {useImageBackgroundColor} from "../../hooks/useImageBackgroundColor";
+import {buildProductUrl} from "../../utils/urlBuilder";
 
 interface ProductCardProps {
     product: {
@@ -21,13 +20,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <Card
             key={product.id}
             shadow="md"
-            radius="md"
+            radius="lg"
             withBorder
             className="relative overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out hover:shadow-lg"
-            style={{ height: "100%" }}
+            style={{ height: "100%", padding: 0 }}
         >
             <div
-                className="relative h-[300px] flex items-center justify-center overflow-hidden rounded-md"
+                className="relative h-[300px] flex items-center justify-center overflow-hidden rounded-t-md"
                 style={{
                     background: backgroundColor || '#f5f5f5',
                 }}
@@ -40,19 +39,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     alt={product.title}
                     className="object-contain h-full w-full"
                 />
-                <Badge color="green" variant="filled" className="absolute bottom-2 right-2 text-lg">
-                    ${product.price}
-                </Badge>
             </div>
-
-            <div className="relative z-10 flex flex-col justify-between">
-                <Group p="apart" mt="auto" mb="xs">
-                    <Text fw={500} className="text-lg font-semibold line-clamp-2" title={product.title}>
+            <Center m={"xs"}>
+                <Stack gap="xs">
+                    <Text fw={500} className="text-lg text-center line-clamp-2" title={product.title}>
                         {product.title}
                     </Text>
-                </Group>
-            </div>
-
+                    <Text fw={300} className="text-lg text-center" title={product.title}>
+                        ${product.price}
+                    </Text>
+                </Stack>
+            </Center>
             <Link to={buildProductUrl(product.category, product.id, product.title)} className="absolute inset-0 z-20" />
         </Card>
     );

@@ -1,6 +1,6 @@
 import {useFetchProducts} from "../../../lib/api/product.api";
 import {Container, Loader, Paper} from "@mantine/core";
-import ProductCard from "./_cards/product.card";
+import ProductCard from "../../../components/_cards/product.card";
 
 
 export default function ProductShowcase() {

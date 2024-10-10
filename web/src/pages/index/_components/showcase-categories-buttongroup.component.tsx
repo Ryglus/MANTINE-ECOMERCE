@@ -1,5 +1,5 @@
-import { Button, Container } from "@mantine/core";
-import { useInViewport } from '@mantine/hooks';
+import {Button, Container} from "@mantine/core";
+import {useInViewport} from '@mantine/hooks';
 
 const buttons = ['Popular', 'New Releases', 'On Sale', 'Who Knows'];
 
@@ -24,7 +24,7 @@ export default function ProductShowcaseButtonGroup() {
                         }`}
                         style={{
                             transitionProperty: 'transform, opacity',
-                            transition: `background-color 200ms ease, transform ${700+ index * 300}ms ease, opacity ${index * 100}ms ease`,
+                            transition: `background-color 200ms ease, transform ${700+ index * 500}ms ease, opacity ${700+ index * 500}ms ease`,
                         }}
                     >
                         {label}

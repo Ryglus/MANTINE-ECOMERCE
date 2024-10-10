@@ -3,7 +3,7 @@ import MainLayout from '../layouts/index-layout';
 
 export default function NotFoundPage() {
     return (
-        <MainLayout takeSpace={true}>
+        <MainLayout>
             <Container size="lg" style={{ textAlign: 'center', marginTop: '5rem' }}>
                 <Title order={1} style={{ fontSize: '4rem' }} c="red">
                     404

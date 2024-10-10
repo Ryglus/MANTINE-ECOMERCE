@@ -23,7 +23,7 @@ import {slugify} from "../../../../utils/urlBuilder";
 import MainLayout from "../../../../layouts/index-layout";
 import SvgTopPageBg from "../../../../components/svg-top-page-bg.component";
 import ProductDetailCarousel from "./_components/product-detail-carousel.component";
-import ProductDetailRecommended from "./_components/product-detail-recomended.component";
+import ProductDetailRecommended from "../../../../components/product-recomended-section.component";
 import {useCartStore} from "../../../../store/cart-store";
 
 export default function ProductDetail() {
@@ -46,8 +46,8 @@ export default function ProductDetail() {
     const breadcrumbs = [
         { label: 'Home'.toUpperCase(), path: '/' },
         { label: 'Shop'.toUpperCase(), path: '/products' },
-        { label: product?.category.toUpperCase(), path: `/products/${category}` },
-        { label: product?.title.toUpperCase(), path: `/products/${category}/${id}/${slug}` }
+        { label: product?.category.toUpperCase(), path: `/products/${product?.category}` },
+        { label: product?.title.toUpperCase(), path: `/products/${product?.category}/${id}/${slug}` }
     ];
 
     const productImages = product?.image ? [product.image, product.image, product.image] : [];
@@ -61,102 +61,103 @@ export default function ProductDetail() {
     };
 
     return (
-        <MainLayout>
-            <SvgTopPageBg color1={"red"} color2={"blue"} />
-            <Container size={"xl"}>
-                <Grid>
-                    <Grid.Col span={{ base: 12, sm: 6 }} className={"block md:hidden"}>
-                        <Card shadow="md" radius="lg" p="lg" withBorder>
-                            <Title order={1} size="h1" fw={700}>
-                                {product?.title}
-                            </Title>
-                        </Card>
-                        <Divider className={"mt-2"} />
-                    </Grid.Col>
-
-                    <Grid.Col span={{ base: 12, sm: 7, md: 6 }}>
-                        <ProductDetailCarousel images={productImages} />
-                    </Grid.Col>
-
-                    <Grid.Col span={{ base: 12, sm: 5, md: 6 }}>
-                        <Stack className={"p-4"}>
-                            <div style={{ flexGrow: 1 }}>
-                                <Text fw={600} size="xs" c="dimmed">
-                                    {breadcrumbs.map((breadcrumb, index) => (
-                                        <span key={breadcrumb.label}>
-                                            <Link to={breadcrumb.path} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                                {breadcrumb.label}
-                                            </Link>
-                                            {index < breadcrumbs.length - 1 && ' | '}
-                                        </span>
-                                    ))}
-                                </Text>
-
-                                <Title size="h1" fw={700} className={"hidden md:block"}>
+        <SvgTopPageBg color1={"red"} color2={"blue"} >
+            <MainLayout>
+                <Container size={"xl"}>
+                    <Grid>
+                        <Grid.Col span={{ base: 12, sm: 6 }} className={"block md:hidden"}>
+                            <Card shadow="md" radius="lg" p="lg" withBorder>
+                                <Title order={1} size="h1" fw={700}>
                                     {product?.title}
                                 </Title>
-                                <Divider className={"my-2"} />
+                            </Card>
+                            <Divider className={"mt-2"} />
+                        </Grid.Col>
 
-                                <Group p="apart" align="center" mt={"sm"}>
-                                    <Badge color="pink" size="lg">{product?.category}</Badge>
-                                    <Rating value={product?.rating.rate} fractions={2} readOnly />
+                        <Grid.Col span={{ base: 12, sm: 7, md: 6 }}>
+                            <ProductDetailCarousel images={productImages} />
+                        </Grid.Col>
+
+                        <Grid.Col span={{ base: 12, sm: 5, md: 6 }}>
+                            <Stack className={"p-4"}>
+                                <div style={{ flexGrow: 1 }}>
+                                    <Text fw={600} size="xs" c="dimmed">
+                                        {breadcrumbs.map((breadcrumb, index) => (
+                                            <span key={breadcrumb.label}>
+                                                <Link to={breadcrumb.path} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                    {breadcrumb.label}
+                                                </Link>
+                                                {index < breadcrumbs.length - 1 && ' | '}
+                                            </span>
+                                        ))}
+                                    </Text>
+
+                                    <Title size="h1" fw={700} className={"hidden md:block"}>
+                                        {product?.title}
+                                    </Title>
+                                    <Divider className={"my-2"} />
+
+                                    <Group p="apart" align="center" mt={"sm"}>
+                                        <Badge color="pink" size="lg">{product?.category}</Badge>
+                                        <Rating value={product?.rating.rate} fractions={2} readOnly />
+                                    </Group>
+
+                                    <Text size="lg" fw={500} c="dimmed" className="line-clamp-6" mt={"xs"}>
+                                        {product?.description}
+                                    </Text>
+
+                                    <Space h="md" />
+                                </div>
+
+                                <Group align="center">
+                                    <NumberInput
+                                        defaultValue={1}
+                                        min={1}
+                                        step={1}
+                                        size="md"
+                                        radius="md"
+                                        label="Qty"
+                                        value={quantity}
+                                        onChange={(value) => setQuantity(Number(value))}
+                                        styles={{
+                                            input: { maxWidth: '80px' },
+                                            label: { fontWeight: 600 },
+                                        }}
+                                        mb="lg"
+                                    />
+                                    <Text size="xl" fw={700} c="green" style={{ lineHeight: 1 }}>
+                                        ${totalPrice.toFixed(2)}
+                                    </Text>
                                 </Group>
 
-                                <Text size="lg" fw={500} c="dimmed" className="line-clamp-6" mt={"xs"}>
-                                    {product?.description}
-                                </Text>
+                                <Button.Group mt="md" style={{ marginTop: 'auto' }}>
+                                    <Button
+                                        leftSection={<IconShoppingCart />}
+                                        color="green"
+                                        radius="md"
+                                        size="md"
+                                        style={{ flexGrow: 1 }}
+                                        onClick={handleAddToCart}
+                                    >
+                                        Add to Cart
+                                    </Button>
+                                    <Button
+                                        color="blue"
+                                        radius="md"
+                                        size="md"
+                                    >
+                                        <IconBookmark size={24} />
+                                    </Button>
+                                </Button.Group>
+                            </Stack>
+                        </Grid.Col>
+                    </Grid>
 
-                                <Space h="md" />
-                            </div>
-
-                            <Group align="center">
-                                <NumberInput
-                                    defaultValue={1}
-                                    min={1}
-                                    step={1}
-                                    size="md"
-                                    radius="md"
-                                    label="Qty"
-                                    value={quantity}
-                                    onChange={(value) => setQuantity(Number(value))}
-                                    styles={{
-                                        input: { maxWidth: '80px' },
-                                        label: { fontWeight: 600 },
-                                    }}
-                                    mb="lg"
-                                />
-                                <Text size="xl" fw={700} c="green" style={{ lineHeight: 1 }}>
-                                    ${totalPrice.toFixed(2)}
-                                </Text>
-                            </Group>
-
-                            <Button.Group mt="md" style={{ marginTop: 'auto' }}>
-                                <Button
-                                    leftSection={<IconShoppingCart />}
-                                    color="green"
-                                    radius="md"
-                                    size="md"
-                                    style={{ flexGrow: 1 }}
-                                    onClick={handleAddToCart}
-                                >
-                                    Add to Cart
-                                </Button>
-                                <Button
-                                    color="blue"
-                                    radius="md"
-                                    size="md"
-                                >
-                                    <IconBookmark size={24} />
-                                </Button>
-                            </Button.Group>
-                        </Stack>
-                    </Grid.Col>
-                </Grid>
-
-                {product?.category && (
-                    <ProductDetailRecommended category={product?.category.toString()} currentProductId={product?.id} />
-                )}
-            </Container>
-        </MainLayout>
+                    {product?.category && (
+                        <ProductDetailRecommended category={product?.category.toString()} currentProductId={product?.id} />
+                    )}
+                </Container>
+            </MainLayout>
+        </SvgTopPageBg>
     );
 }
