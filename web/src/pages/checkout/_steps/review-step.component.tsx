@@ -12,6 +12,7 @@ export default function ReviewStep() {
                     key={item.id}
                     product={item}
                     quantity={item.quantity}
+                    isEditable={false}
                 />
             ))}
         </div>

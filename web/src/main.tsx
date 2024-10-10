@@ -14,20 +14,23 @@ const theme = createTheme({
     primaryColor: 'primary',
     primaryShade: 6,
     colors: {
-        primary: ['#ffffff', '#e3fafc', '#c5f6fa', '#99e9f2', '#66d9e8', '#3bc9db', '#22b8cf', '#15aabf', '#1098ad', '#0c8599'],
-        bg: ['#A5A6AE', '#828595', '#72768C', '#646983', '#585D7A', '#4C5273', '#464C6B', '#414663', '#3B405A', '#353A52']
+        secondary: ['#eff1f5', '#e0e3eb', '#c0c7d8', '#a1abc4', '#8290b0', '#62749d', '#4f5d7d', '#3b455e', '#272e3f', '#14171f'],
+        primary: ['#f1eff5', '#e3e0eb', '#c7c0d8', '#aaa1c4', '#8e82b0', '#72629d', '#5b4f7d', '#443b5e', '#2e273f', '#17141f'],
+        bg: ['#f3eff5', '#e6e0eb', '#cec0d8', '#b5a1c4', '#9d82b0', '#84629d', '#6a4f7d', '#4f3b5e', '#35273f', '#1a141f'],
+        text: ['#eff1f5', '#dfe3ec', '#c0c7d8', '#a0abc5', '#818eb1', '#61729e', '#4e5b7e', '#3a455f', '#272e3f', '#131720'],
     },
     components: {
         LoadingOverlay: {
             defaultProps: {
-                overlayProps: { blur: 2.5, color: '#353A52' }
-            }
+                overlayProps: { blur: 2.5, color: '#353A52' },
+            },
         },
         Divider: {
-            defaultProps: { color: 'bg.6' }
-        }
-    }
+            defaultProps: { color: 'bg.6' },
+        },
+    },
 });
+
 
 const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
     variables: {},

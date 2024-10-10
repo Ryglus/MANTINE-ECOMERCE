@@ -216,11 +216,11 @@ export default function FsCarousel() {
                 >
                     <IconChevronLeft size={24} />
                 </button>
-                <div className="py-2.5 px-6 rounded-full bg-opacity-50 bg-white flex gap-2">
+                <div className="py-3 px-5 rounded-full bg-opacity-50 bg-white flex gap-2">
                     {slides.map((_, index) => (
                         <span
                             key={index}
-                            className={`w-3 h-3 rounded-full ${index === currentIndex ? 'bg-gray-900' : 'bg-gray-400'}`}
+                            className={`w-2 h-2 mx-0.5 rounded-full ${index === currentIndex ? 'bg-gray-900' : 'bg-gray-400'}`}
                         />
                     ))}
                 </div>
