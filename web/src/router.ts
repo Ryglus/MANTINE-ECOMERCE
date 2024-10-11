@@ -10,6 +10,7 @@ export type Path =
   | `/account/register`
   | `/cart`
   | `/checkout/:step?`
+  | `/orders`
   | `/orders/:hash`
   | `/products/:category/:id/:slug?`
   | `/products/:category?`

@@ -1,11 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import axios from 'axios';
-import { User } from './dto/account.dto';
-import { useAuthStore } from '../../store/auth-store';
+import {User} from './dto/account.dto';
+import {useAuthStore} from '../../store/auth-store';
+
 const API_URL = 'https://fakestoreapi.com';
 
 const userInfoMutationFn = async (variables: number): Promise<User> => {
     const { data } = await axios.get(`${API_URL}/users/${variables}`);
+    return data;
+};
+export const fetchUsers = async (): Promise<User[]> => {
+    const { data } = await axios.get("https://fakestoreapi.com/users");
     return data;
 };
 

@@ -14,3 +14,15 @@ export interface MinifiedOrderData {
     };
     items: Array<{ id: number; quantity: number }>;
 }
+
+interface ProductRecord {
+    productId: number;
+    quantity: number;
+}
+
+export interface Order {
+    id: number;
+    userId: number;
+    date: string;
+    products: ProductRecord[];
+}
