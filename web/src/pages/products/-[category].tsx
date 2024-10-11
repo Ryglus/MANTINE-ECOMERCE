@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {useParams} from "../../router"; // Import useNavigate for URL navigation
-import {useFetchCategories, useFetchProducts, useFetchProductsByCategory} from "../../lib/api/product.api";
+import {useParams} from "../../router";
+import {useFetchCategories, useFetchProductsByCategoryOrNot} from "../../lib/api/product.api";
 import MainLayout from "../../layouts/index-layout";
 import {
     Button,
@@ -29,7 +29,7 @@ const productsPerPageOptions = [
 export default function CategoryPage() {
     const { category } = useParams('/products/:category?');
     const navigate = useNavigate();
-    const { data: products, isLoading, error } = category ? useFetchProductsByCategory(category) : useFetchProducts();
+    const { data: products, isLoading, error } = useFetchProductsByCategoryOrNot(category);
     const { data: categories } = useFetchCategories();
 
     const [currentPage, setCurrentPage] = useState(1);

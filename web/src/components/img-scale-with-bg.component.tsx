@@ -1,6 +1,7 @@
 import {useImageBackgroundColor} from "../hooks/useImageBackgroundColor";
+import {ComponentProps} from "react";
 
-interface ImgProps extends React.ComponentProps<'img'> {
+interface ImgProps extends ComponentProps<'img'> {
     img: string;
     alt: string;
 }

@@ -44,7 +44,7 @@ export const useFetchProducts = () => {
 
 export const useFetchProductById = (productId: string) => {
     return useQuery<Product, Error>({
-        queryKey: ['product', productId],
+        queryKey: ['products', productId],
         queryFn: () => fetchProductById(productId),
     });
 };
@@ -53,6 +53,13 @@ export const useFetchProductsByCategory = (category: string) => {
     return useQuery<Product[], Error>({
         queryKey: ['products', category],
         queryFn: () => fetchProductsByCategory(category),
+    });
+};
+
+export const useFetchProductsByCategoryOrNot = (category?: string) => {
+    return useQuery<Product[], Error>({
+        queryKey: ['products', category],
+        queryFn: () => category ? fetchProductsByCategory(category) : fetchProducts(),
     });
 };
 

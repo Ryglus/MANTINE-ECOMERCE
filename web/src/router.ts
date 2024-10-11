@@ -10,11 +10,13 @@ export type Path =
   | `/account/register`
   | `/cart`
   | `/checkout/:step?`
+  | `/orders/:hash`
   | `/products/:category/:id/:slug?`
   | `/products/:category?`
 
 export type Params = {
   '/checkout/:step?': { step?: string }
+  '/orders/:hash': { hash: string }
   '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
   '/products/:category?': { category?: string }
 }
