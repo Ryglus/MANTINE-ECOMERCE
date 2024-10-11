@@ -56,7 +56,7 @@ export default function CheckoutPage() {
         } else {
             setActiveStep(currentStepIndex);
         }
-    }, [navigate, uniqueItemsCount, currentStepIndex, activeStep]);
+    }, [currentStepIndex]);
 
     const handleStepMove = (toPageIndex: number) => {
         setActiveStep(currentStepIndex);
