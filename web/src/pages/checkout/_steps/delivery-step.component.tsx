@@ -1,33 +1,34 @@
 import {useEffect, useState} from 'react';
-import {Card, Radio, Stack, TextInput} from '@mantine/core';
+import {Card, Radio, Stack} from '@mantine/core';
 import {useAuthStore} from '../../../store/auth-store';
-import {DeliveryData, getEmptyDeliveryData, StepComponentProps} from "../../../lib/api/dto/checkout.dto";
+import {DeliveryData, getDeliveryData, StepComponentProps} from "../../../lib/api/dto/checkout.dto";
+import {useForm} from '@mantine/form';
+
+import {DeliveryAddressForm, DeliveryOptionsForm, PersonalInfoForm} from '../_forms';
 
 export default function DeliveryStep({ onValidChange, data }: StepComponentProps) {
     const { user } = useAuthStore();
     const deliveryData = data?.delivery || null;
     const [useSavedAddress, setUseSavedAddress] = useState(!!user?.address);
 
-    const [address, setAddress] = useState<DeliveryData>(
-        deliveryData || {
-            firstname: user?.name?.firstname || '',
-            lastname: user?.name?.lastname || '',
-            city: user?.address?.city || '',
-            street: user?.address?.street || '',
-            number: String(user?.address?.number || ''),
-            zipcode: user?.address?.zipcode || '',
-            phone: user?.phone || '',
-        }
-    );
-
-    const handleChange = (field: keyof DeliveryData, value: string) => {
-        setAddress((prev) => ({ ...prev, [field]: value }));
-    };
+    const form = useForm<DeliveryData>({
+        initialValues: deliveryData || getDeliveryData(user),
+        validate: {
+            firstname: (value) => value.length > 0 ? null : 'First name is required',
+            lastname: (value) => value.length > 0 ? null : 'Last name is required',
+            city: (value) => value.length > 0 ? null : 'City is required',
+            street: (value) => value.length > 0 ? null : 'Street is required',
+            number: (value) => /^\d+$/.test(value) ? null : 'Street number must be a valid number',
+            zipcode: (value) => /^\d{3} \d{2}$/.test(value) ? null : 'ZIP code must be in format 123 45',
+            phone: (value) => /^\d{3} \d{3} \d{3}$/.test(value) ? null : 'Phone number must be in format 123 456 789',
+            shippingOption: (value) => (value ? null : 'Shipping option is required'),
+        },
+    });
 
     const handleAddressOptionChange = (value: 'saved' | 'new') => {
-        setUseSavedAddress(value === 'saved');
         if (value === 'saved' && user?.address) {
-            setAddress({
+            setUseSavedAddress(true);
+            form.setValues({
                 firstname: user.name.firstname,
                 lastname: user.name.lastname,
                 city: user.address.city,
@@ -37,26 +38,29 @@ export default function DeliveryStep({ onValidChange, data }: StepComponentProps
                 phone: user.phone || '',
             });
         } else {
-            setAddress(getEmptyDeliveryData());
+            setUseSavedAddress(false);
+            form.setValues(getDeliveryData());
         }
     };
 
     useEffect(() => {
-        const isValid = Object.values(address).every((field) => field.trim().length > 0);
-        onValidChange?.(isValid, address);
-    }, [address, onValidChange]);
+        const isValid = form.isValid();
+        onValidChange?.(isValid || useSavedAddress, {
+            ...form.values
+        });
+    }, [form.values]);
 
     return (
         <div>
             {user?.address && (
                 <Stack mb="md">
                     <Radio.Group
-                        label="Choose address option"
+                        label="Select address option"
                         value={useSavedAddress ? 'saved' : 'new'}
                         onChange={(value) => handleAddressOptionChange(value as 'saved' | 'new')}
                     >
                         <Radio value="saved" label="Use saved address" />
-                        <Radio value="new" label="Use different address" />
+                        <Radio value="new" label="Use new address" />
                     </Radio.Group>
 
                     {useSavedAddress && (
@@ -73,51 +77,13 @@ export default function DeliveryStep({ onValidChange, data }: StepComponentProps
             )}
 
             {!useSavedAddress && (
-                <div>
-                    <TextInput
-                        label="First Name"
-                        value={address.firstname}
-                        onChange={(e) => handleChange('firstname', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="Last Name"
-                        value={address.lastname}
-                        onChange={(e) => handleChange('lastname', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="City"
-                        value={address.city}
-                        onChange={(e) => handleChange('city', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="Street"
-                        value={address.street}
-                        onChange={(e) => handleChange('street', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="Street Number"
-                        value={address.number}
-                        onChange={(e) => handleChange('number', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="Zip Code"
-                        value={address.zipcode}
-                        onChange={(e) => handleChange('zipcode', e.currentTarget.value)}
-                        required
-                    />
-                    <TextInput
-                        label="Phone"
-                        value={address.phone}
-                        onChange={(e) => handleChange('phone', e.currentTarget.value)}
-                        required
-                    />
-                </div>
+                <>
+                    <PersonalInfoForm form={form}/>
+                    <DeliveryAddressForm form={form} />
+                </>
             )}
+
+            <DeliveryOptionsForm form={form}/>
         </div>
     );
 }

@@ -11,7 +11,6 @@ export default function ReviewStep({ data }: StepComponentProps) {
     return (
         <div>
             <h2>Review Order</h2>
-
             {deliveryData ? (
                 <Card shadow="sm" p="lg" withBorder mb="md">
                     <Stack>
@@ -30,7 +29,6 @@ export default function ReviewStep({ data }: StepComponentProps) {
                     <Stack>
                         <Text>Cardholder: {paymentData.cardholderName}</Text>
                         <Text>Card Number: **** **** **** {paymentData.cardNumber.slice(-4)}</Text>
-                        <Text>Billing Address: {paymentData.billingAddress}</Text>
                     </Stack>
                 </Card>
             ) : (
