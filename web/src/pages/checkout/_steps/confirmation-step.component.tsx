@@ -16,7 +16,6 @@ export default function ConfirmationStep({ data }: StepComponentProps) {
                 delivery: data.delivery,
                 payment: {
                     cardholderName: data.payment.cardholderName,
-                    billingAddress: data.payment.billingAddress,
                 },
                 items: items.map(item => ({ id: item.id, quantity: item.quantity })),
             };

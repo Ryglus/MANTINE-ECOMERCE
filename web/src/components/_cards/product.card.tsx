@@ -21,7 +21,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             key={product.id}
             shadow="md"
             radius="lg"
-            withBorder
+            bg={"bg"}
             className="relative overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out hover:shadow-lg"
             style={{ height: "100%", padding: 0 }}
         >

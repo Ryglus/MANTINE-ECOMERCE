@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
-import PageHeader from '../components/page-header.component';
 import PageFooter from "../components/page-footer.component";
+import EcommerceHeader from "../components/page-header.component";
 
 
 interface IndexLayoutProps {
@@ -11,11 +11,11 @@ interface IndexLayoutProps {
 export default function MainLayout({ children, takeSpace = true }: IndexLayoutProps) {
     return (
         <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
-            <PageHeader takeSpace={takeSpace}/>
+            <EcommerceHeader takeSpace={takeSpace} />
             <main style={{flex: 1}}>
                 {children}
             </main>
-            <PageFooter/>
+            <PageFooter />
         </div>
     );
 }

@@ -69,3 +69,23 @@ export const useFetchCategories = () => {
         queryFn: fetchCategories,
     });
 };
+
+export const searchProducts = async (query: string): Promise<Product[]> => {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const products: Product[] = await response.json();
+
+    return products.filter(product =>
+        product.title.toLowerCase().includes(query.toLowerCase())
+    );
+};
+
+export const useSearchProducts = (query: string) => {
+    return useQuery<Product[], Error>({
+        queryKey: ['searchProducts', query],
+        queryFn: () => searchProducts(query),
+        enabled: !!query,
+    });
+};

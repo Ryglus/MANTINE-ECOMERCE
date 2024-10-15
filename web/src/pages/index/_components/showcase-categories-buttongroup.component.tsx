@@ -18,7 +18,7 @@ export default function ProductShowcaseButtonGroup() {
                         size="lg"
                         fullWidth
                         variant="filled"
-                        color="blue"
+                        color="bg"
                         className={`transition-all duration-700 ease-in-out transform ${
                             inViewport ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                         }`}

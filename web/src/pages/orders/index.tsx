@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Box, Container, Loader} from "@mantine/core";
 import {showNotification} from "@mantine/notifications";
 import MainLayout from "../../layouts/index-layout";
-import SvgTopPageBg from "../../components/svg-top-page-bg.component";
+import SvgPageBg from "../../components/svg-page-bg.component";
 import {DataTable} from "mantine-datatable";
 import {useOrderData} from "../../lib/api/order.api";
 
@@ -14,21 +14,21 @@ export default function OrderListPage() {
 
     if (ordersQuery.isLoading || usersQuery.isLoading || productsQuery.isLoading) {
         return (
-            <SvgTopPageBg>
+            <SvgPageBg>
                 <MainLayout>
                     <Loader />
                 </MainLayout>
-            </SvgTopPageBg>
+            </SvgPageBg>
         );
     }
 
     if (ordersQuery.isError || usersQuery.isError || productsQuery.isError) {
         return (
-            <SvgTopPageBg>
+            <SvgPageBg>
                 <MainLayout>
                     <Box>Error loading data. Please try again later.</Box>
                 </MainLayout>
-            </SvgTopPageBg>
+            </SvgPageBg>
         );
     }
 
@@ -49,7 +49,7 @@ export default function OrderListPage() {
     };
 
     return (
-        <SvgTopPageBg>
+        <SvgPageBg>
             <MainLayout>
                 <Container size={"xl"} bg={"dark"}>
                     <DataTable
@@ -101,6 +101,6 @@ export default function OrderListPage() {
                     />
                 </Container>
             </MainLayout>
-        </SvgTopPageBg>
+        </SvgPageBg>
     );
 }

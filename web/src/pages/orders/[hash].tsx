@@ -7,7 +7,7 @@ import {useParams} from "../../router";
 import {fetchProductById} from "../../lib/api/product.api";
 import {Product} from "../../lib/api/dto/product.dto";
 import MainLayout from "../../layouts/index-layout";
-import SvgTopPageBg from "../../components/svg-top-page-bg.component";
+import SvgPageBg from "../../components/svg-page-bg.component";
 
 export default function OrderPage() {
     const { hash } = useParams('/orders/:hash');
@@ -51,7 +51,7 @@ export default function OrderPage() {
     }
 
     return (
-        <SvgTopPageBg>
+        <SvgPageBg>
             <MainLayout>
                 <Container size={"xl"}>
                     <h2>Order Summary</h2>
@@ -70,7 +70,6 @@ export default function OrderPage() {
                         <h3>Payment Details</h3>
                         <Stack>
                             <Text>Cardholder: {orderData.payment.cardholderName}</Text>
-                            <Text>Billing Address: {orderData.payment.billingAddress}</Text>
                         </Stack>
                     </Card>
 
@@ -89,6 +88,6 @@ export default function OrderPage() {
                     )}
                 </Container>
             </MainLayout>
-        </SvgTopPageBg>
+        </SvgPageBg>
     );
 }

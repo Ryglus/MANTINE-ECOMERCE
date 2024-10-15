@@ -1,10 +1,15 @@
-import {ActionIcon, Anchor, Center, Container, Grid, Group, Image, Text} from '@mantine/core';
+import {ActionIcon, Anchor, Center, Container, Grid, Group, Image, useMantineTheme} from '@mantine/core';
 import {IconBrandFacebook, IconBrandInstagram, IconBrandTwitter} from '@tabler/icons-react';
 
 export default function PageFooter() {
+    const theme = useMantineTheme();
     return (
-        <footer style={{ marginTop: 'auto' }}>
-            <Container size="xl" className="text-white py-8 bg-gray-900 rounded-t-2xl">
+        <footer className="w-full transition-all duration-300 py-2.5"
+                style={{
+                    backgroundColor: theme.colors.primary[9],
+                    marginTop:"auto"
+                }}>
+            <Container size={"xl"}>
                 <Grid align="center">
                     <Grid.Col span={4}>
                         <Group dir="column" align="flex-start" gap="xs">
@@ -49,10 +54,6 @@ export default function PageFooter() {
                         </Group>
                     </Grid.Col>
                 </Grid>
-
-                <Text size="sm" c="gray" className={"text-center"} mt="md">
-                    © 2024 VelvetCove. All rights reserved.
-                </Text>
             </Container>
         </footer>
     );

@@ -21,10 +21,10 @@ import {useParams} from "../../../../router";
 import {useFetchProductById} from "../../../../lib/api/product.api";
 import {slugify} from "../../../../utils/urlBuilder";
 import MainLayout from "../../../../layouts/index-layout";
-import SvgTopPageBg from "../../../../components/svg-top-page-bg.component";
 import ProductDetailCarousel from "./_components/product-detail-carousel.component";
 import ProductDetailRecommended from "../../../../components/product-recomended-section.component";
 import {useCartStore} from "../../../../store/cart-store";
+import SvgPageBg from "../../../../components/svg-page-bg.component";
 
 export default function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
@@ -61,7 +61,7 @@ export default function ProductDetail() {
     };
 
     return (
-        <SvgTopPageBg color1={"red"} color2={"blue"} >
+        <SvgPageBg>
             <MainLayout>
                 <Container size={"xl"}>
                     <Grid>
@@ -158,6 +158,6 @@ export default function ProductDetail() {
                     )}
                 </Container>
             </MainLayout>
-        </SvgTopPageBg>
+        </SvgPageBg>
     );
 }

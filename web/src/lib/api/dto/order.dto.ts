@@ -10,7 +10,6 @@ export interface MinifiedOrderData {
     };
     payment: {
         cardholderName: string;
-        billingAddress: string;
     };
     items: Array<{ id: number; quantity: number }>;
 }
