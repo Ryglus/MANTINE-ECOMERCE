@@ -9,7 +9,6 @@ interface SvgTopPageBgProps {
 const SvgPageBg: React.FC<SvgTopPageBgProps> = ({ color1 = "#35273f", color2 = "#1a141f", children }) => {
     return  (
         <div style={{ position: 'relative', overflow: 'hidden' }}>
-            {/* Top SVG (rotated) */}
             <svg
                 id="wave-top"
                 style={{
@@ -47,12 +46,10 @@ const SvgPageBg: React.FC<SvgTopPageBgProps> = ({ color1 = "#35273f", color2 = "
                 ></path>
             </svg>
 
-            {/* Content */}
             <div style={{position: 'relative', zIndex: 1}}>
                 {children}
             </div>
 
-            {/* Bottom SVG (normal orientation) */}
             <svg
                 id="wave-bottom"
                 style={{
