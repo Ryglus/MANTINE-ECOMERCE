@@ -1,8 +1,8 @@
 import {Button, Container, Stack, Text, Title} from '@mantine/core';
 import {SlideViewProps} from "./slide.types";
+import {Link} from "react-router-dom";
 
-export default function SlideView3({ dragOffset, index }: SlideViewProps) {
-    const subtleFactor = 0.2;
+export default function SlideView3({ dragOffset, index, subtleFactor=0.2 }: SlideViewProps) {
     const basePosition = (-index) * window.innerWidth * subtleFactor;
     const translateX = basePosition + dragOffset * window.innerWidth * subtleFactor;
 
@@ -13,7 +13,7 @@ export default function SlideView3({ dragOffset, index }: SlideViewProps) {
                 className="text-left"
                 style={{
                     transform: `translateX(${translateX}px)`,
-                    transition: 'transform 0.2s ease-out', // Smooth transition for the parallax effect
+                    transition: 'transform 0.2s ease-out',
                 }}
             >
                 <Stack gap="md">
@@ -28,6 +28,7 @@ export default function SlideView3({ dragOffset, index }: SlideViewProps) {
                         radius="xl"
                         variant="filled"
                         className="bg-[#8968a1] text-white px-8 py-3 transition-transform duration-200 hover:bg-[#72629d]"
+                        component={Link} to="/products/men's clothing"
                     >
                         Browse Collection
                     </Button>

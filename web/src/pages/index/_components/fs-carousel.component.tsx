@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
 import {Carousel, Embla} from '@mantine/carousel';
-
 import FsCarouselNavigation from "./fs-carousel-navigation.component";
 import SlideView1 from "./_slides/slide-1.component";
 import SlideView2 from "./_slides/slide-2.component";
@@ -27,15 +26,15 @@ export default function FsCarousel() {
             src: '/slides/slide2.webp',
             alt: 'Slide 2',
             content: (
-                <SlideView2 index={0.5} dragOffset={dragOffset}/>
+                <SlideView2 index={0.5} dragOffset={dragOffset} />
             ),
         },
         {
             id: 3,
-            src: '/slides/slide1.webp',
+            src: '/slides/slide6.webp',
             alt: 'Slide 3',
             content: (
-                <SlideView3 index={1} dragOffset={dragOffset}/>
+                <SlideView3 index={1} dragOffset={dragOffset} />
             ),
         },
     ];
@@ -43,7 +42,9 @@ export default function FsCarousel() {
     const handleScroll = useCallback(() => {
         if (!embla) return;
         const progress = embla.scrollProgress();
-        setDragOffset(progress);
+        requestAnimationFrame(() => {
+            setDragOffset(progress);
+        });
     }, [embla]);
 
     const updateButtonStates = useCallback(() => {
@@ -54,11 +55,13 @@ export default function FsCarousel() {
 
     useEffect(() => {
         if (embla) {
-            embla.on('scroll', handleScroll);
             embla.on('select', updateButtonStates);
+            embla.on('pointerUp', () => document.body.style.cursor = 'default');
+            embla.on('pointerDown', () => document.body.style.cursor = 'grabbing');
+            embla.on('scroll', handleScroll);
             updateButtonStates();
         }
-    }, [embla, handleScroll, updateButtonStates]);
+    }, [embla, updateButtonStates]);
 
     return (
         <div className="relative w-full h-screen">
@@ -77,14 +80,15 @@ export default function FsCarousel() {
                             height: '100vh',
                             backgroundImage: `url(${slide.src})`,
                             backgroundSize: 'cover',
-                            backgroundPosition: 'center',
+                            objectFit: 'cover',
+                            backgroundPosition: 'top center',
                         }}
                     >
                         {slide.content}
                     </Carousel.Slide>
                 ))}
             </Carousel>
-            <FsCarouselNavigation embla={embla} canScrollNext={canScrollNext} canScrollPrev={canScrollPrev} currentIndex={currentIndex} slides={slides.length}/>
+            <FsCarouselNavigation embla={embla} canScrollNext={canScrollNext} canScrollPrev={canScrollPrev} currentIndex={currentIndex} slides={slides.length} />
         </div>
     );
 }

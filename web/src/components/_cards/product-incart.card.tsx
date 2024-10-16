@@ -1,4 +1,4 @@
-import {ActionIcon, Card, Group, NumberInput, Stack, Text} from "@mantine/core";
+import {ActionIcon, Grid, Text, Title} from "@mantine/core";
 import React, {useState} from "react";
 import {Product} from "../../lib/api/dto/product.dto";
 import {useCartStore} from "../../store/cart-store";
@@ -6,6 +6,7 @@ import {IconTrash} from "@tabler/icons-react";
 import ImgScaleWithBg from "../img-scale-with-bg.component";
 import {buildProductUrl} from "../../utils/urlBuilder";
 import {Link} from "react-router-dom";
+import QtyInput from "../qty-input.component";
 
 interface ProductIncartCardProps {
     product: Product;
@@ -13,57 +14,75 @@ interface ProductIncartCardProps {
     isEditable?: boolean;
 }
 
-export default function ProductIncartCard({ product, quantity, isEditable = true }: ProductIncartCardProps) {
+export default function ProductIncartCard({
+                                              product,
+                                              quantity,
+                                              isEditable = true,
+                                          }: ProductIncartCardProps) {
     const removeItem = useCartStore((state) => state.removeItem);
     const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
     const [currentQuantity, setCurrentQuantity] = useState(quantity);
-    const totalPrice = (product.price * currentQuantity).toFixed(2);
 
-    const handleQuantityChange = (newQuantity: number | undefined) => {
-        if (newQuantity) {
-            setCurrentQuantity(newQuantity);
-            updateItemQuantity(product.id, newQuantity);
-        }
+    const handleQuantityChange = (newQuantity: number) => {
+        setCurrentQuantity(newQuantity);
+        updateItemQuantity(product.id, newQuantity);
     };
 
+    const totalPrice = (product.price * currentQuantity).toFixed(2);
+
     return (
-        <Card shadow="sm" p="lg" mb="lg" key={product.id} radius="md">
-            <Group align="flex-start">
-                <ImgScaleWithBg img={product.image} alt={product.title} className="relative h-[90px] aspect-square rounded-xl p-1" />
+        <div className="relative hover:shadow-lg transition-shadow duration-300 p-2">
+            <Grid grow align="center">
+                <Grid.Col span={{ base: 2, md:"auto" }}>
+                    <ImgScaleWithBg
+                        img={product.image}
+                        alt={product.title}
+                        className="relative h-[70px] w-[70px] md:h-[100px] md:w-[100px] flex-shrink-0 rounded-md"
+                    />
+                </Grid.Col>
+                <Grid.Col span={{ base: 10 }}>
+                    <Grid align="center">
+                        <Grid.Col span={{base:12, md:7}}>
+                            <Title size="lg" className={"line-clamp-1"}>
+                                {product.title}
+                            </Title>
+                            <Text size="sm" fw={500} c="dimmed">
+                                Unit Price: ${product.price.toFixed(2)}
+                            </Text>
+                        </Grid.Col>
+                        <Grid.Col span={{base:6, md:"auto"}}>
+                            {isEditable && (
+                                <QtyInput
+                                    size={"sm"}
+                                    min={1}
+                                    value={currentQuantity}
+                                    onChange={handleQuantityChange}
+                                />
+                            )}
+                        </Grid.Col>
+                        <Grid.Col span="auto">
+                            <Text size="lg" fw={600} className="text-center">
+                                ${totalPrice}
+                            </Text>
+                        </Grid.Col>
+                    </Grid>
+                </Grid.Col>
+            </Grid>
 
-                <Stack gap="xs" style={{ flex: 1 }}>
-                    <Text fw={500} lineClamp={1}>
-                        {product.title}
-                    </Text>
-                    {isEditable ? (
-                        <NumberInput
-                            value={currentQuantity}
-                            onChange={(value) => handleQuantityChange(Number(value))}
-                            min={1}
-                            label="Quantity"
-                            size="sm"
-                            styles={{ input: { maxWidth: 60 } }}
-                        />
-                    ) : (
-                        <Text size="sm" c="dimmed">
-                            ${product.price.toFixed(2)} x {currentQuantity}
-                        </Text>
-                    )}
-                    <Text size="sm" fw={600}>
-                        Total: ${totalPrice}
-                    </Text>
-                </Stack>
+            <Link to={buildProductUrl(product.category, product.id, product.title)} className="no-underline"></Link>
 
-                <Group dir="column" align="center" gap="xs" className={"z-10"}>
-
-                    {isEditable && (
-                        <ActionIcon variant="outline" color="red" size="xl" onClick={() => removeItem(product.id)}>
-                            <IconTrash size={22} />
-                        </ActionIcon>
-                    )}
-                </Group>
-            </Group>
-            <Link to={buildProductUrl(product.category, product.id, product.title)} className="absolute inset-0" />
-        </Card>
+            {isEditable && (
+                <ActionIcon
+                    variant="light"
+                    color="red"
+                    size="lg"
+                    onClick={() => removeItem(product.id)}
+                    className="hover:scale-110 transition-transform duration-200"
+                    style={{ position: "absolute", top: "8px", right: "8px" }}
+                >
+                    <IconTrash size={18} />
+                </ActionIcon>
+            )}
+        </div>
     );
 }
