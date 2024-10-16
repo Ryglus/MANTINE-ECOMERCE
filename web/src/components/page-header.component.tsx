@@ -85,16 +85,16 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                     </div>
 
                     <nav className="hidden lg:flex gap-6">
-                        <Button component={Link} to="/" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Home
                         </Button>
-                        <Button component={Link} to="/products" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/products" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Shop
                         </Button>
-                        <Button component={Link} to="/products" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/products" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Categories
                         </Button>
-                        <Button component={Link} to="/contact" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/contact" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Contact
                         </Button>
                     </nav>
