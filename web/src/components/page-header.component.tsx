@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ActionIcon, Button, Drawer, Image, useMantineTheme} from '@mantine/core';
+import {ActionIcon, Button, Drawer, Image, Indicator, useMantineTheme} from '@mantine/core';
 import {IconLogout, IconMenu2, IconShoppingCart, IconUser} from '@tabler/icons-react';
 import {Link} from "react-router-dom";
 import {useScrollManager} from '../hooks/useScrollManager';
@@ -58,8 +58,8 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                 className="w-full fixed top-0 z-50 transition-all duration-300"
                 style={{
                     height: `${headerHeight}px`,
-                    backgroundColor: isScrolled ? theme.colors.primary[9] : 'rgba(0, 0, 0, 0.05)',
-                    boxShadow: isScrolled ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none',
+                    backgroundColor: isScrolled ? theme.colors.primary[9] : 'rgba(0, 0, 0, 0.1)',
+                    boxShadow: isScrolled ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
                 }}
             >
                 <div className="max-w-[1480px] mx-auto flex justify-between items-center px-6 transition-all duration-300 ease-in-out">
@@ -103,21 +103,31 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                         <div className="hidden md:block">
                             <ProductSearch />
                         </div>
-                        <ActionIcon component={Link} to="/cart" size="lg" variant="light" className="hover:scale-110 transition-transform">
-                            <IconShoppingCart />
-                            {uniqueItemsCount > 0 && (
-                                <span className="bg-red-600 text-white text-xs rounded-full p-1 ml-2">
-                                    {uniqueItemsCount}
-                                </span>
-                            )}
-                        </ActionIcon>
+
+                        {uniqueItemsCount > 0 ? (
+                            <Link to="/cart" className="hover:scale-110 transition-transform">
+                                <Indicator
+                                    color="red"
+                                    size="lg"
+                                    label={uniqueItemsCount}
+                                >
+                                    <ActionIcon size="lg" variant="light">
+                                        <IconShoppingCart size={24} />
+                                    </ActionIcon>
+                                </Indicator>
+                            </Link>
+                        ) : (
+                            <ActionIcon component={Link} to="/cart" size="lg" variant="light" className="hover:scale-110 transition-transform">
+                                <IconShoppingCart size={24} />
+                            </ActionIcon>
+                        )}
                         <ActionIcon component={Link} to="/account" size="lg" variant="light" className="hover:scale-110 transition-transform">
                             <IconUser />
                         </ActionIcon>
 
                         {token && (
-                            <ActionIcon size="lg" variant="light" onClick={handleLogout} className="hover:scale-110 transition-transform"
-                                        style={{ backgroundColor: theme.colors.bg[5] }}>
+                            <ActionIcon size="lg" onClick={handleLogout} className="hover:scale-110 transition-transform"
+                                        bg={"bg"}>
                                 <IconLogout />
                             </ActionIcon>
                         )}
