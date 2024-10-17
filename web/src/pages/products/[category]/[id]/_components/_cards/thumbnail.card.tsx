@@ -1,6 +1,6 @@
-import { Box } from '@mantine/core';
-import {useImageBackgroundColor} from "../../../../../../hooks/useImageBackgroundColor";
-
+import {Box} from '@mantine/core';
+import ImgScaleWithBg from "../../../../../../components/ui/img-scale-with-bg.component";
+import React from "react";
 
 interface ThumbnailCardProps {
     image: string;
@@ -9,29 +9,19 @@ interface ThumbnailCardProps {
 }
 
 const ThumbnailCard: React.FC<ThumbnailCardProps> = ({ image, isActive, onClick }) => {
-    const backgroundColor = useImageBackgroundColor(image);
-
     return (
         <Box
             onClick={onClick}
-            style={(theme) => ({
-                cursor: 'pointer',
-                border: isActive ? `2px solid ${theme.colors.blue[6]}` : 'none',
-                borderRadius: theme.radius.sm,
-                overflow: 'hidden',
+            className={`relative cursor-pointer overflow-hidden ${isActive ? 'border-2 border-purple-700' : ''}`}
+            style={{
                 aspectRatio: '1 / 1'
-            })}
+            }}
         >
-            <div
-                className="flex items-center justify-center"
-                style={{
-                    background: backgroundColor || '#f5f5f5',
-                }}
-            >
-                <img
-                    src={image}
-                    alt={"thumbnail"}
-                    className="object-contain h-full w-full"
+            <div className="flex items-center justify-center w-full h-full">
+                <ImgScaleWithBg
+                    img={image}
+                    alt={image}
+                    className="h-full w-full object-contain"
                 />
             </div>
         </Box>

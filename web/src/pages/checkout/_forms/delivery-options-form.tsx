@@ -1,15 +1,17 @@
 import {useState} from 'react';
 import {IconBuildingWarehouse, IconTruckDelivery} from '@tabler/icons-react';
-import {Badge, Card, Grid, Group, Radio, RadioGroup, Text} from '@mantine/core';
+import {Badge, Card, Grid, Group, Text} from '@mantine/core';
 import {ShippingCompanyOptions, shippingOptions} from '../../../lib/api/dto/shipping.dto';
-import {DeliveryData} from "../../../lib/api/dto/checkout.dto";
+import {DeliveryData} from '../../../lib/api/dto/checkout.dto';
 
 interface DeliveryOptionsFormProps {
     form: { values: DeliveryData; setFieldValue: (field: string, value: any) => void };
 }
 
 export default function DeliveryOptionsForm({ form }: DeliveryOptionsFormProps) {
-    const [selectedOption, setSelectedOption] = useState(form.values.shippingOption?.company +"-" +form.values.shippingOption?.option.optionName);
+    const [selectedOption, setSelectedOption] = useState(
+        form.values.shippingOption?.company + '-' + form.values.shippingOption?.option.optionName
+    );
 
     const getIconByDeliveryType = (deliveryType: string) => {
         switch (deliveryType) {
@@ -43,38 +45,45 @@ export default function DeliveryOptionsForm({ form }: DeliveryOptionsFormProps) 
     };
 
     return (
-        <RadioGroup value={selectedOption} onChange={handleSelectionChange}>
-            <Grid gutter="md">
-                {shippingOptions.map((companyOption: ShippingCompanyOptions) => (
-                    <Grid.Col key={companyOption.company} span={{ base: 12, sm: 6, md: 4 }}>
-                        <Card shadow="sm" padding="lg" withBorder>
-                            <Text fw={500} size="lg" mb="sm">
-                                {companyOption.company}
+        <Grid gutter="md">
+            {shippingOptions.map((companyOption: ShippingCompanyOptions) => (
+                <Grid.Col key={companyOption.company} span={{ base: 12, sm: 6, md: 4 }}>
+                    <Text fw={500} size="lg" mb="sm">
+                        {companyOption.company}
+                    </Text>
+
+                    {companyOption.options.map((method) => (
+                        <Card
+                            key={method.optionName}
+                            shadow="sm"
+                            padding="lg"
+                            withBorder
+                            className={`cursor-pointer transition-all duration-300 ${
+                                selectedOption === `${companyOption.company}-${method.optionName}`
+                                    ? 'border-blue-500 ring-2 ring-blue-300'
+                                    : 'hover:shadow-md'
+                            }`}
+                            onClick={() => handleSelectionChange(`${companyOption.company}-${method.optionName}`)}
+                        >
+                            <Group >
+                                <Text fw={500} size="sm">
+                                    {method.optionName}
+                                </Text>
+                                {getIconByDeliveryType(method.deliveryType)}
+                            </Group>
+
+                            <Group  mt="xs">
+                                <Badge color="green">{method.estimatedDeliveryTime}</Badge>
+                                <Badge color="blue">{method.price}</Badge>
+                            </Group>
+
+                            <Text size="xs" color="dimmed" mt="md">
+                                Select this option
                             </Text>
-
-                            {companyOption.options.map((method) => (
-                                <Card key={method.optionName} shadow="xs" padding="md" mt="sm" withBorder>
-                                    <Group p="apart">
-                                        <Text size="sm">{method.optionName}</Text>
-                                        {getIconByDeliveryType(method.deliveryType)}
-                                    </Group>
-
-                                    <Group p="apart" mt="xs">
-                                        <Badge color="green">{method.estimatedDeliveryTime}</Badge>
-                                        <Badge color="blue">{method.price}</Badge>
-                                    </Group>
-
-                                    <Radio
-                                        value={`${companyOption.company}-${method.optionName}`}
-                                        label={`Choose ${method.optionName}`}
-                                        mt="md"
-                                    />
-                                </Card>
-                            ))}
                         </Card>
-                    </Grid.Col>
-                ))}
-            </Grid>
-        </RadioGroup>
+                    ))}
+                </Grid.Col>
+            ))}
+        </Grid>
     );
 }

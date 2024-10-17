@@ -2,11 +2,11 @@ import {useState} from 'react';
 import {ActionIcon, Button, Drawer, Image, Indicator, useMantineTheme} from '@mantine/core';
 import {IconLogout, IconMenu2, IconShoppingCart, IconUser} from '@tabler/icons-react';
 import {Link} from "react-router-dom";
-import {useScrollManager} from '../hooks/useScrollManager';
-import {useAuthStore} from '../store/auth-store';
-import {useCartStore} from '../store/cart-store';
+import {useScrollManager} from '../../hooks/useScrollManager';
+import {useAuthStore} from '../../store/auth-store';
+import {useCartStore} from '../../store/cart-store';
 import {useViewportSize} from '@mantine/hooks';
-import ProductSearch from "./product-search-bar.component";
+import ProductSearch from "../inputs/product-search-bar.component";
 
 interface PageHeaderProps {
     takeSpace?: boolean;
@@ -91,9 +91,6 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                         <Button component={Link} to="/products" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Shop
                         </Button>
-                        <Button component={Link} to="/products" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
-                            Categories
-                        </Button>
                         <Button component={Link} to="/contact" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Contact
                         </Button>
@@ -157,9 +154,6 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                             </Button>
                             <Button component={Link} to="/shop" variant="subtle" color="primary">
                                 Shop
-                            </Button>
-                            <Button component={Link} to="/categories" variant="subtle" color="primary">
-                                Categories
                             </Button>
                             <Button component={Link} to="/about" variant="subtle" color="primary">
                                 About Us

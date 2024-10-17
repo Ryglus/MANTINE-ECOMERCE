@@ -7,7 +7,7 @@ import {useParams} from "../../router";
 import {fetchProductById} from "../../lib/api/product.api";
 import {Product} from "../../lib/api/dto/product.dto";
 import MainLayout from "../../layouts/index-layout";
-import SvgPageBg from "../../components/svg-page-bg.component";
+import SvgPageBg from "../../components/ui/svg-page-bg.component";
 
 export default function OrderPage() {
     const { hash } = useParams('/orders/:hash');

@@ -1,4 +1,4 @@
-import {useImageBackgroundColor} from "../hooks/useImageBackgroundColor";
+import {useImageBackgroundColor} from "../../hooks/useImageBackgroundColor";
 import {ComponentProps} from "react";
 
 interface ImgProps extends ComponentProps<'img'> {

@@ -3,7 +3,7 @@ import MainLayout from "../../layouts/index-layout";
 import {Button, Container, Divider, Flex, Grid, Group, Paper, Stack, Text, TextInput, Title} from "@mantine/core";
 import {Link} from "react-router-dom";
 import ProductIncartCard from "../../components/_cards/product-incart.card";
-import SvgPageBg from "../../components/svg-page-bg.component";
+import SvgPageBg from "../../components/ui/svg-page-bg.component";
 import {IconDiscount2} from "@tabler/icons-react";
 import {useState} from "react";
 import PayPalButton from "./_components/paypal-button.component";

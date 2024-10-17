@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Input, Loader, Paper, Text} from '@mantine/core';
 import {IconSearch} from '@tabler/icons-react';
-import {useSearchProducts} from "../lib/api/product.api";
-import ImgScaleWithBg from "./img-scale-with-bg.component";
-import {buildProductUrl} from "../utils/urlBuilder";
+import {useSearchProducts} from "../../lib/api/product.api";
+import ImgScaleWithBg from "../ui/img-scale-with-bg.component";
+import {buildProductUrl} from "../../utils/urlBuilder";
 import {Link} from "react-router-dom";
 
 

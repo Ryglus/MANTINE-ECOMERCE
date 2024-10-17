@@ -1,24 +1,14 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useParams} from "../../router";
 import {useFetchCategories, useFetchProductsByCategoryOrNot} from "../../lib/api/product.api";
 import MainLayout from "../../layouts/index-layout";
-import {
-    Button,
-    Center,
-    Container,
-    Grid,
-    Group,
-    Loader,
-    NumberInput,
-    Pagination,
-    SegmentedControl,
-    Select,
-    TextInput,
-    Title
-} from "@mantine/core";
+import {Center, Container, Grid, GridCol, Loader, Pagination, SegmentedControl, Title} from "@mantine/core";
 import ProductCard from "../../components/_cards/product.card";
 import {Product} from "../../lib/api/dto/product.dto";
 import {useNavigate} from "react-router-dom";
+import {NumberParam, StringParam, useQueryParams, withDefault} from 'use-query-params';
+import ProductFilter from "./_components/product-filter.component";
+import SvgPageBg from "../../components/ui/svg-page-bg.component";
 
 const productsPerPageOptions = [
     { value: '3', label: '3 per page' },
@@ -32,14 +22,35 @@ export default function CategoryPage() {
     const { data: products, isLoading, error } = useFetchProductsByCategoryOrNot(category);
     const { data: categories } = useFetchCategories();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage, setProductsPerPage] = useState(6);
+    const [query, setQuery] = useQueryParams({
+        name: StringParam,
+        minPrice: NumberParam,
+        maxPrice: NumberParam,
+        minRating: NumberParam,
+        categoryFilter: StringParam,
+        page: withDefault(NumberParam, 1),
+        productsPerPage: withDefault(NumberParam, 6)
+    });
 
-    const [nameFilter, setNameFilter] = useState('');
-    const [minPrice, setMinPrice] = useState<number | undefined>();
-    const [maxPrice, setMaxPrice] = useState<number | undefined>();
-    const [minRating, setMinRating] = useState<number | undefined>();
-    const [categoryFilter, setCategoryFilter] = useState<string | null>(category || null);
+    const [nameFilter, setNameFilter] = useState(query.name || '');
+    const [minPrice, setMinPrice] = useState(query.minPrice || undefined);
+    const [maxPrice, setMaxPrice] = useState(query.maxPrice || undefined);
+    const [minRating, setMinRating] = useState(query.minRating || undefined);
+    const [categoryFilter, setCategoryFilter] = useState(query.categoryFilter || category || null);
+    const [currentPage, setCurrentPage] = useState(query.page);
+    const [productsPerPage, setProductsPerPage] = useState(query.productsPerPage);
+
+    useEffect(() => {
+        setQuery({
+            name: nameFilter || undefined,
+            minPrice: minPrice || undefined,
+            maxPrice: maxPrice || undefined,
+            minRating: minRating || undefined,
+            categoryFilter: categoryFilter || undefined,
+            page: currentPage,
+            productsPerPage
+        });
+    }, [nameFilter, minPrice, maxPrice, minRating, categoryFilter, currentPage, productsPerPage]);
 
     const handleProductsPerPageChange = (value: string) => {
         if (value) {
@@ -56,6 +67,7 @@ export default function CategoryPage() {
             navigate('/products');
         }
     };
+
     const filterProducts = (products: Product[]) => {
         return products.filter((product) => {
             const matchesName = product.title.toLowerCase().includes(nameFilter.toLowerCase());
@@ -75,92 +87,77 @@ export default function CategoryPage() {
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
     return (
-        <MainLayout>
-            <Container size="xl">
-                <Title>Products in {category || "All Categories"}</Title>
+        <SvgPageBg>
+            <MainLayout>
+                <Container size="xl">
+                    <div className="flex flex-wrap justify-between items-center gap-4">
+                        <Title size={30} className="flex-grow">
+                            PRODUCTS FROM {category?.toUpperCase() || "ALL CATEGORIES"}
+                        </Title>
 
-                <Group mb="md" grow>
-                    <TextInput
-                        label="Search by name"
-                        placeholder="Enter product name"
-                        value={nameFilter}
-                        onChange={(e) => setNameFilter(e.currentTarget.value)}
-                    />
-                    <NumberInput
-                        label="Min Price"
-                        value={minPrice}
-                        onChange={(value) => setMinPrice(Number(value))}
-                        placeholder="Min"
-                        min={0}
-                    />
-                    <NumberInput
-                        label="Max Price"
-                        value={maxPrice}
-                        onChange={(value) => setMaxPrice(Number(value))}
-                        placeholder="Max"
-                        min={0}
-                    />
-                    <NumberInput
-                        label="Min Rating"
-                        value={minRating}
-                        onChange={(value) => setMinRating(Number(value))}
-                        placeholder="Min"
-                        min={0}
-                        max={5}
-                    />
-                    <Select
-                        label="Category"
-                        placeholder="Pick a category"
-                        data={categories || []}
-                        value={categoryFilter}
-                        onChange={handleCategoryChange}
-                        clearable
-                    />
-                    <Button variant="outline" onClick={() => {
-                        setNameFilter('');
-                        setMinPrice(undefined);
-                        setMaxPrice(undefined);
-                        setMinRating(undefined);
-                        setCategoryFilter(null);
-                    }}>
-                        Clear Filters
-                    </Button>
-                </Group>
+                        <SegmentedControl
+                            data={productsPerPageOptions.map((option) => ({value: option.value, label: option.label}))}
+                            value={productsPerPage.toString()}
+                            onChange={handleProductsPerPageChange}
+                            size="sm"
+                            mb="md"
+                            className="w-full sm:w-auto"
+                        />
+                    </div>
 
-                <SegmentedControl
-                    data={productsPerPageOptions.map((option) => ({ value: option.value, label: option.label }))}
-                    value={productsPerPage.toString()}
-                    onChange={handleProductsPerPageChange}
-                    size="sm"
-                    mb="md"
-                />
-
-                <Grid>
-                    {isLoading && (
-                        <Center>
-                            <Loader />
-                        </Center>
-                    )}
-                    {error && (
-                        <Title>Error loading products</Title>
-                    )}
-                    {paginatedProducts && (
-                        paginatedProducts.map((product) => (
-                            <Grid.Col key={product.id} span={4}>
-                                <ProductCard product={product} />
-                            </Grid.Col>
-                        ))
-                    )}
-                </Grid>
-
-                <Pagination
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={setCurrentPage}
-                    mt="md"
-                    p="center"
-                />
-            </Container>
-        </MainLayout>
+                    <Grid>
+                        <GridCol span={{md: 2.5}}>
+                            <ProductFilter
+                                nameFilter={nameFilter}
+                                minPrice={minPrice}
+                                maxPrice={maxPrice}
+                                minRating={minRating}
+                                categoryFilter={categoryFilter}
+                                categories={categories}
+                                setNameFilter={setNameFilter}
+                                setMinPrice={setMinPrice}
+                                setMaxPrice={setMaxPrice}
+                                setMinRating={setMinRating}
+                                handleCategoryChange={handleCategoryChange}
+                                clearFilters={() => {
+                                    setNameFilter('');
+                                    setMinPrice(undefined);
+                                    setMaxPrice(undefined);
+                                    setMinRating(undefined);
+                                    setCategoryFilter(null);
+                                }}
+                            />
+                        </GridCol>
+                        <GridCol span={{md:9.5}}>
+                            <Grid>
+                                {isLoading && (
+                                    <Center>
+                                        <Loader />
+                                    </Center>
+                                )}
+                                {error && (
+                                    <Title>Error loading products</Title>
+                                )}
+                                {paginatedProducts && (
+                                    paginatedProducts.map((product) => (
+                                        <Grid.Col key={product.id} span={{base:6,md:4}}>
+                                            <ProductCard product={product} />
+                                        </Grid.Col>
+                                    ))
+                                )}
+                            </Grid>
+                            <Center>
+                                <Pagination
+                                    total={totalPages}
+                                    value={currentPage}
+                                    onChange={setCurrentPage}
+                                    my="md"
+                                />
+                            </Center>
+                        </GridCol>
+                    </Grid>
+                </Container>
+            </MainLayout>
+        </SvgPageBg>
     );
 }

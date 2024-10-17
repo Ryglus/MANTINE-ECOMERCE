@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
-import {Card, Radio, Stack} from '@mantine/core';
+import {Accordion, Card, Group, Stack, Text} from '@mantine/core';
 import {useAuthStore} from '../../../store/auth-store';
 import {DeliveryData, getDeliveryData, StepComponentProps} from "../../../lib/api/dto/checkout.dto";
 import {useForm} from '@mantine/form';
-
 import {DeliveryAddressForm, DeliveryOptionsForm, PersonalInfoForm} from '../_forms';
+import {IconBuildingSkyscraper, IconMapPin} from '@tabler/icons-react';
 
 export default function DeliveryStep({ onValidChange, data }: StepComponentProps) {
     const { user } = useAuthStore();
@@ -52,38 +52,45 @@ export default function DeliveryStep({ onValidChange, data }: StepComponentProps
 
     return (
         <div>
-            {user?.address && (
-                <Stack mb="md">
-                    <Radio.Group
-                        label="Select address option"
-                        value={useSavedAddress ? 'saved' : 'new'}
-                        onChange={(value) => handleAddressOptionChange(value as 'saved' | 'new')}
-                    >
-                        <Radio value="saved" label="Use saved address" />
-                        <Radio value="new" label="Use new address" />
-                    </Radio.Group>
+            <Accordion multiple={false} defaultValue={useSavedAddress ? 'saved' : 'new'}>
+                {user?.address && (
+                    <Accordion.Item value="saved">
+                        <Accordion.Control onClick={() => handleAddressOptionChange('saved')}>
+                            <Group>
+                                <IconMapPin size={24} />
+                                <Text>Use saved address</Text>
+                            </Group>
+                        </Accordion.Control>
+                        <Accordion.Panel>
+                            <Card shadow="sm" p="lg" withBorder>
+                                <Stack>
+                                    <Text>{user.name.firstname} {user.name.lastname}</Text>
+                                    <Text>{user.address.street} {user.address.number}</Text>
+                                    <Text>{user.address.city}, {user.address.zipcode}</Text>
+                                    <Text>{user.phone}</Text>
+                                </Stack>
+                            </Card>
+                        </Accordion.Panel>
+                    </Accordion.Item>
+                )}
 
-                    {useSavedAddress && (
-                        <Card shadow="sm" p="lg" withBorder>
-                            <Stack>
-                                <span>{user.name.firstname} {user.name.lastname}</span>
-                                <span>{user.address.street} {user.address.number}</span>
-                                <span>{user.address.city}, {user.address.zipcode}</span>
-                                <span>{user.phone}</span>
-                            </Stack>
-                        </Card>
-                    )}
-                </Stack>
-            )}
+                <Accordion.Item value="new">
+                    <Accordion.Control onClick={() => handleAddressOptionChange('new')}>
+                        <Group>
+                            <IconBuildingSkyscraper size={24} />
+                            <Text>Enter a new address</Text>
+                        </Group>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <Stack>
+                            <PersonalInfoForm form={form} />
+                            <DeliveryAddressForm form={form} />
+                        </Stack>
+                    </Accordion.Panel>
+                </Accordion.Item>
+            </Accordion>
 
-            {!useSavedAddress && (
-                <>
-                    <PersonalInfoForm form={form}/>
-                    <DeliveryAddressForm form={form} />
-                </>
-            )}
-
-            <DeliveryOptionsForm form={form}/>
+            <DeliveryOptionsForm form={form} />
         </div>
     );
 }

@@ -1,19 +1,21 @@
 import {Button, Container} from "@mantine/core";
 import {useInViewport} from '@mantine/hooks';
-
-const buttons = ['Popular', 'New Releases', 'On Sale', 'Who Knows'];
+import {useFetchCategories} from "../../../lib/api/product.api";
+import {Link} from "react-router-dom";
+import React from "react";
 
 export default function ProductShowcaseButtonGroup() {
     const { ref, inViewport } = useInViewport();
-
+    const { data: categories } = useFetchCategories();
     return (
         <Container size="xl">
             <div
                 ref={ref}
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 my-5 lg:my-10"
             >
-                {buttons.map((label, index) => (
+                {categories?.map((label, index) => (
                     <Button
+                        component={Link} to={"/products/" + label}
                         key={label}
                         size="lg"
                         fullWidth
@@ -27,7 +29,7 @@ export default function ProductShowcaseButtonGroup() {
                             transition: `background-color 200ms ease, transform ${700+ index * 500}ms ease, opacity ${700+ index * 500}ms ease`,
                         }}
                     >
-                        {label}
+                        {label.toUpperCase()}
                     </Button>
                 ))}
             </div>

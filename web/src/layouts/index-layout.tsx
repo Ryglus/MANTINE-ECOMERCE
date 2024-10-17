@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
-import PageFooter from "../components/page-footer.component";
-import EcommerceHeader from "../components/page-header.component";
+import PageFooter from "../components/ui/page-footer.component";
+import EcommerceHeader from "../components/ui/page-header.component";
 
 
 interface IndexLayoutProps {

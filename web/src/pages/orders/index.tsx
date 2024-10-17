@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Box, Container, Loader} from "@mantine/core";
 import {showNotification} from "@mantine/notifications";
 import MainLayout from "../../layouts/index-layout";
-import SvgPageBg from "../../components/svg-page-bg.component";
+import SvgPageBg from "../../components/ui/svg-page-bg.component";
 import {DataTable} from "mantine-datatable";
 import {useOrderData} from "../../lib/api/order.api";
 

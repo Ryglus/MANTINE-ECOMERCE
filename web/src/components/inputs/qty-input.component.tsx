@@ -9,6 +9,7 @@ interface QtyInputProps {
     value: number;
     onChange: (value: number) => void;
     size?: 'sm' | 'md' | 'lg';
+    className?: string;
 }
 
 const QtyInput: FC<QtyInputProps> = ({
@@ -18,6 +19,8 @@ const QtyInput: FC<QtyInputProps> = ({
                                          value,
                                          onChange,
                                          size = 'md',
+                                         className,
+                                         ...rest
                                      }) => {
     const handleValueChange = (action: 'increment' | 'decrement') => {
         const newValue =
@@ -30,35 +33,39 @@ const QtyInput: FC<QtyInputProps> = ({
     const iconSize = size === 'lg' ? 20 : size === 'sm' ? 14 : 18;
     const elementWidth = size === 'lg' ? 70 : size === 'sm' ? 50 : 60;
 
-
     const DecButton = () => {
-        return <Button
-            variant="filled"
-            size={size}
-            style={{ width: elementWidth }}
-            className={value <= min ? "" : "hover:scale-110 transition-transform"}
-            onClick={() => handleValueChange('decrement')}
-            disabled={value <= min}
-        >
-            <IconMinus size={iconSize} />
-        </Button>
-    }
+        return (
+            <Button
+                variant="filled"
+                size={size}
+                style={{ width: elementWidth }}
+                className={value <= min ? "" : "hover:scale-110 transition-transform"}
+                onClick={() => handleValueChange('decrement')}
+                disabled={value <= min}
+            >
+                <IconMinus size={iconSize} />
+            </Button>
+        );
+    };
+
     const IncButton = () => {
-        return <Button
-            variant="filled"
-            size={size}
-            style={{ width: elementWidth }}
-            className={value >= max ? "" : "hover:scale-110 transition-transform"}
-            onClick={() => handleValueChange('increment')}
-            disabled={value >= max}
-        >
-            <IconPlus size={iconSize} />
-        </Button>
-    }
+        return (
+            <Button
+                variant="filled"
+                size={size}
+                style={{ width: elementWidth }}
+                className={value >= max ? "" : "hover:scale-110 transition-transform"}
+                onClick={() => handleValueChange('increment')}
+                disabled={value >= max}
+            >
+                <IconPlus size={iconSize} />
+            </Button>
+        );
+    };
+
     return (
-        <Button.Group
-        >
-            <DecButton/>
+        <Button.Group className={className} {...rest}> {/* Add className and spread ...rest */}
+            <DecButton />
             <NumberInput
                 value={value}
                 onChange={(val) => onChange(Math.min(Math.max(Number(val), min), max))}
@@ -69,10 +76,10 @@ const QtyInput: FC<QtyInputProps> = ({
                 size={size}
                 style={{ width: elementWidth, textAlign: 'center' }}
                 styles={{
-                    input: { textAlign: 'center', width: '100%', fontWeight: '500',border:"none",borderRadius:"0" },
+                    input: { textAlign: 'center', width: '100%', fontWeight: '500', border: "none", borderRadius: "0" },
                 }}
             />
-            <IncButton/>
+            <IncButton />
         </Button.Group>
     );
 };

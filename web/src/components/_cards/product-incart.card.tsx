@@ -3,10 +3,10 @@ import React, {useState} from "react";
 import {Product} from "../../lib/api/dto/product.dto";
 import {useCartStore} from "../../store/cart-store";
 import {IconTrash} from "@tabler/icons-react";
-import ImgScaleWithBg from "../img-scale-with-bg.component";
+import ImgScaleWithBg from "../ui/img-scale-with-bg.component";
 import {buildProductUrl} from "../../utils/urlBuilder";
 import {Link} from "react-router-dom";
-import QtyInput from "../qty-input.component";
+import QtyInput from "../inputs/qty-input.component";
 
 interface ProductIncartCardProps {
     product: Product;
@@ -33,7 +33,7 @@ export default function ProductIncartCard({
     return (
         <div className="relative hover:shadow-lg transition-shadow duration-300 p-2">
             <Grid grow align="center">
-                <Grid.Col span={{ base: 2, md:"auto" }}>
+                <Grid.Col span={{ base: 2, md: "auto" }}>
                     <ImgScaleWithBg
                         img={product.image}
                         alt={product.title}
@@ -42,7 +42,7 @@ export default function ProductIncartCard({
                 </Grid.Col>
                 <Grid.Col span={{ base: 10 }}>
                     <Grid align="center">
-                        <Grid.Col span={{base:12, md:7}}>
+                        <Grid.Col span={{ base: 12, md: 7 }}>
                             <Title size="lg" className={"line-clamp-1"}>
                                 {product.title}
                             </Title>
@@ -50,13 +50,14 @@ export default function ProductIncartCard({
                                 Unit Price: ${product.price.toFixed(2)}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={{base:6, md:"auto"}}>
+                        <Grid.Col span={{ base: 6, md: "auto" }} className="relative z-20">
                             {isEditable && (
                                 <QtyInput
                                     size={"sm"}
                                     min={1}
                                     value={currentQuantity}
                                     onChange={handleQuantityChange}
+                                    className="z-20 relative"
                                 />
                             )}
                         </Grid.Col>
@@ -69,20 +70,24 @@ export default function ProductIncartCard({
                 </Grid.Col>
             </Grid>
 
-            <Link to={buildProductUrl(product.category, product.id, product.title)} className="no-underline"></Link>
-
             {isEditable && (
                 <ActionIcon
                     variant="light"
                     color="red"
                     size="lg"
                     onClick={() => removeItem(product.id)}
-                    className="hover:scale-110 transition-transform duration-200"
+                    className="hover:scale-110 transition-transform duration-200 z-20"
                     style={{ position: "absolute", top: "8px", right: "8px" }}
                 >
                     <IconTrash size={18} />
                 </ActionIcon>
             )}
+
+            {/* Use pointer-events-none to disable clicks on the link itself */}
+            <Link
+                to={buildProductUrl(product.category, product.id, product.title)}
+                className="absolute inset-0 z-10"
+            />
         </div>
     );
 }

@@ -7,7 +7,7 @@ import {
     Grid,
     Group,
     Loader,
-    NumberInput,
+    Paper,
     Rating,
     Space,
     Stack,
@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import {IconBookmark, IconShoppingCart} from '@tabler/icons-react';
 import {Link, useNavigate} from 'react-router-dom';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useParams} from "../../../../router";
 import {useFetchProductById} from "../../../../lib/api/product.api";
 import {slugify} from "../../../../utils/urlBuilder";
@@ -24,7 +24,9 @@ import MainLayout from "../../../../layouts/index-layout";
 import ProductDetailCarousel from "./_components/product-detail-carousel.component";
 import ProductDetailRecommended from "../../../../components/product-recomended-section.component";
 import {useCartStore} from "../../../../store/cart-store";
-import SvgPageBg from "../../../../components/svg-page-bg.component";
+import SvgPageBg from "../../../../components/ui/svg-page-bg.component";
+import CartQuantity from "../../../../components/cart-quantity.component";
+import QtyInput from "../../../../components/inputs/qty-input.component";
 
 export default function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
@@ -32,7 +34,8 @@ export default function ProductDetail() {
     const { data: product, isLoading, error } = useFetchProductById(id);
     const navigate = useNavigate();
     const addItem = useCartStore((state) => state.addItem);
-
+    const itemQuantity = useCartStore((state) => state.items.find((i) => i.id === product?.id)?.quantity || 0);
+    const removeItem = useCartStore((state) => state.removeItem);
     useEffect(() => {
         if (product && slug !== slugify(product?.title)) {
             const correctSlug = slugify(product?.title);
@@ -44,15 +47,12 @@ export default function ProductDetail() {
     if (error || !id) return <MainLayout><Container size={"xl"}><div>Error fetching product details</div></Container></MainLayout>;
 
     const breadcrumbs = [
-        { label: 'Home'.toUpperCase(), path: '/' },
-        { label: 'Shop'.toUpperCase(), path: '/products' },
         { label: product?.category.toUpperCase(), path: `/products/${product?.category}` },
         { label: product?.title.toUpperCase(), path: `/products/${product?.category}/${id}/${slug}` }
     ];
 
     const productImages = product?.image ? [product.image, product.image, product.image] : [];
     const unitPrice = product?.price || 0;
-    const totalPrice = unitPrice * quantity;
 
     const handleAddToCart = () => {
         if (product) {
@@ -79,7 +79,7 @@ export default function ProductDetail() {
                         </Grid.Col>
 
                         <Grid.Col span={{ base: 12, sm: 5, md: 6 }}>
-                            <Stack className={"p-4"}>
+                            <Stack className={"p-4"} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                                 <div style={{ flexGrow: 1 }}>
                                     <Text fw={600} size="xs" c="dimmed">
                                         {breadcrumbs.map((breadcrumb, index) => (
@@ -109,47 +109,80 @@ export default function ProductDetail() {
                                     <Space h="md" />
                                 </div>
 
-                                <Group align="center">
-                                    <NumberInput
-                                        defaultValue={1}
-                                        min={1}
-                                        step={1}
-                                        size="md"
-                                        radius="md"
-                                        label="Qty"
-                                        value={quantity}
-                                        onChange={(value) => setQuantity(Number(value))}
-                                        styles={{
-                                            input: { maxWidth: '80px' },
-                                            label: { fontWeight: 600 },
-                                        }}
-                                        mb="lg"
-                                    />
-                                    <Text size="xl" fw={700} c="green" style={{ lineHeight: 1 }}>
-                                        ${totalPrice.toFixed(2)}
+                                <Group>
+                                    {product && (
+                                        <Paper
+                                            radius="xl"
+                                            shadow="md"
+                                            bg={"bg.8"}
+                                            py={5}
+                                            px={itemQuantity ? 5 : 0}
+                                            className={`relative transition-all duration-500 ease-out select-none`}
+                                            style={{
+                                                width: itemQuantity ? '250px' : '0',
+                                                overflow: 'hidden',
+                                                opacity: itemQuantity ? 1 : 0,
+                                            }}
+                                        >
+                                            <Group style={{ flexWrap: 'nowrap', width: '100%', position: 'relative' }}>
+                                                <div className={"z-20"}>
+                                                    <CartQuantity
+                                                        size={"md"}
+                                                        quantity={itemQuantity}
+                                                        onRemove={() => { removeItem(product.id); }}
+                                                    />
+                                                </div>
+
+                                                <Text
+                                                    size={"27"}
+                                                    fw={700}
+                                                    style={{
+                                                        lineHeight: 1,
+                                                        whiteSpace: 'nowrap',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        marginLeft: '8px',
+                                                    }}
+                                                >
+                                                    To cart
+                                                </Text>
+                                            </Group>
+                                            <Link to={"/cart"} className="absolute inset-0 z-10" />
+                                        </Paper>
+                                    )}
+
+                                    <Text size={"30"} fw={700} style={{ lineHeight: 1 }}>
+                                        ${unitPrice.toFixed(2)}
                                     </Text>
                                 </Group>
-
-                                <Button.Group mt="md" style={{ marginTop: 'auto' }}>
-                                    <Button
-                                        leftSection={<IconShoppingCart />}
-                                        color="green"
-                                        radius="md"
+                                <Stack>
+                                    <QtyInput
+                                        min={1}
+                                        value={quantity}
+                                        onChange={(value) => setQuantity(Number(value))}
                                         size="md"
-                                        style={{ flexGrow: 1 }}
-                                        onClick={handleAddToCart}
-                                    >
-                                        Add to Cart
-                                    </Button>
-                                    <Button
-                                        color="blue"
-                                        radius="md"
-                                        size="md"
-                                    >
-                                        <IconBookmark size={24} />
-                                    </Button>
-                                </Button.Group>
+                                    />
+                                    <Button.Group>
+                                        <Button
+                                            leftSection={<IconShoppingCart />}
+                                            radius="sm"
+                                            size="md"
+                                            style={{ flexGrow: 1 }}
+                                            onClick={handleAddToCart}
+                                        >
+                                            Add to Cart
+                                        </Button>
+                                        <Button
+                                            variant={"default"}
+                                            radius="sm"
+                                            size="md"
+                                        >
+                                            <IconBookmark size={24} />
+                                        </Button>
+                                    </Button.Group>
+                                </Stack>
                             </Stack>
+
                         </Grid.Col>
                     </Grid>
 
