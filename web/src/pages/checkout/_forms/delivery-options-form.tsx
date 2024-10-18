@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {IconBuildingWarehouse, IconTruckDelivery} from '@tabler/icons-react';
-import {Badge, Card, Grid, Group, Text} from '@mantine/core';
+import {IconBuildingWarehouse, IconCubeSend, IconTruckDelivery} from '@tabler/icons-react';
+import {Badge, Card, Flex, Grid, Group, Radio, RadioGroup, Text} from '@mantine/core';
 import {ShippingCompanyOptions, shippingOptions} from '../../../lib/api/dto/shipping.dto';
 import {DeliveryData} from '../../../lib/api/dto/checkout.dto';
 
@@ -19,6 +19,8 @@ export default function DeliveryOptionsForm({ form }: DeliveryOptionsFormProps) 
                 return <IconTruckDelivery size={30} />;
             case 'pickup':
                 return <IconBuildingWarehouse size={30} />;
+            case 'express':
+                return <IconCubeSend size={34} />;
             default:
                 return null;
         }
@@ -45,45 +47,48 @@ export default function DeliveryOptionsForm({ form }: DeliveryOptionsFormProps) 
     };
 
     return (
-        <Grid gutter="md">
-            {shippingOptions.map((companyOption: ShippingCompanyOptions) => (
-                <Grid.Col key={companyOption.company} span={{ base: 12, sm: 6, md: 4 }}>
-                    <Text fw={500} size="lg" mb="sm">
-                        {companyOption.company}
-                    </Text>
-
-                    {companyOption.options.map((method) => (
-                        <Card
-                            key={method.optionName}
-                            shadow="sm"
-                            padding="lg"
-                            withBorder
-                            className={`cursor-pointer transition-all duration-300 ${
-                                selectedOption === `${companyOption.company}-${method.optionName}`
-                                    ? 'border-blue-500 ring-2 ring-blue-300'
-                                    : 'hover:shadow-md'
-                            }`}
-                            onClick={() => handleSelectionChange(`${companyOption.company}-${method.optionName}`)}
-                        >
-                            <Group >
-                                <Text fw={500} size="sm">
-                                    {method.optionName}
-                                </Text>
-                                {getIconByDeliveryType(method.deliveryType)}
-                            </Group>
-
-                            <Group  mt="xs">
-                                <Badge color="green">{method.estimatedDeliveryTime}</Badge>
-                                <Badge color="blue">{method.price}</Badge>
-                            </Group>
-
-                            <Text size="xs" color="dimmed" mt="md">
-                                Select this option
+        <RadioGroup value={selectedOption} onChange={handleSelectionChange} p={"md"}>
+            <Grid gutter="md">
+                {shippingOptions.map((companyOption: ShippingCompanyOptions) => (
+                    <Grid.Col key={companyOption.company} span={{ base: 12, sm: 6, md: 4 }}>
+                        <div>
+                            <Text fw={600} size="lg">
+                                {companyOption.company}
                             </Text>
-                        </Card>
-                    ))}
-                </Grid.Col>
-            ))}
-        </Grid>
+                            {companyOption.options.map((method) => (
+                                <Card
+                                    key={method.optionName}
+                                    shadow="md"
+                                    radius="md"
+                                    mt={"md"}
+                                    className="cursor-pointer transition hover:shadow-lg hover:bg-primary-100"
+                                    onClick={() =>
+                                        handleSelectionChange(`${companyOption.company}-${method.optionName}`)
+                                    }
+                                >
+                                    <Flex justify="space-between" align="center">
+                                        <Group gap="sm">
+                                            <Radio
+                                                className="cursor-pointer"
+                                                value={`${companyOption.company}-${method.optionName}`}
+                                                checked={selectedOption === `${companyOption.company}-${method.optionName}`}
+                                                color="primary"
+                                            />
+                                            <Text size="md">{method.optionName}</Text>
+                                        </Group>
+                                        {getIconByDeliveryType(method.deliveryType)}
+                                    </Flex>
+
+                                    <Group mt="sm">
+                                        <Badge color="green" variant="light">{method.estimatedDeliveryTime}</Badge>
+                                        <Badge color="blue" variant="light">{method.price}</Badge>
+                                    </Group>
+                                </Card>
+                            ))}
+                        </div>
+                    </Grid.Col>
+                ))}
+            </Grid>
+        </RadioGroup>
     );
 }

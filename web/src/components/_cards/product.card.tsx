@@ -54,7 +54,7 @@ const ProductCard = ({ product, size = "md" }: ProductCardProps) => {
                 <Badge color="pink" variant="filled" className="absolute top-2 left-2">
                     {product.category}
                 </Badge>
-                <ImgScaleWithBg img={product.image} alt={product.title} className="object-contain h-full w-full" />
+                <ImgScaleWithBg loading="lazy" img={product.image} alt={product.title} className="object-contain h-full w-full" />
             </div>
 
             <Center m={"xs"} style={{ flexGrow: 1 }}>

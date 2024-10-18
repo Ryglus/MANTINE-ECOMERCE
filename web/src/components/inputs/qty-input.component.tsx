@@ -64,7 +64,7 @@ const QtyInput: FC<QtyInputProps> = ({
     };
 
     return (
-        <Button.Group className={className} {...rest}> {/* Add className and spread ...rest */}
+        <Button.Group className={className} {...rest}>
             <DecButton />
             <NumberInput
                 value={value}

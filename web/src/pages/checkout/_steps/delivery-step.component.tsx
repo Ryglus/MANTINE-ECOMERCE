@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Accordion, Card, Group, Stack, Text} from '@mantine/core';
+import {Accordion, Card, Divider, Group, Stack, Text} from '@mantine/core';
 import {useAuthStore} from '../../../store/auth-store';
 import {DeliveryData, getDeliveryData, StepComponentProps} from "../../../lib/api/dto/checkout.dto";
 import {useForm} from '@mantine/form';
@@ -89,7 +89,7 @@ export default function DeliveryStep({ onValidChange, data }: StepComponentProps
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-
+            <Divider my={"lg"}/>
             <DeliveryOptionsForm form={form} />
         </div>
     );

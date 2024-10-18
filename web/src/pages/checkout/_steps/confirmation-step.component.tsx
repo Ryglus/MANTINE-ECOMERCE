@@ -15,6 +15,8 @@ export default function ConfirmationStep({ data }: StepComponentProps) {
             const minifiedOrder: MinifiedOrderData = {
                 delivery: data.delivery,
                 payment: {
+                    paymentMethod: data.payment.selectedPaymentMethod,
+                    status:"Pending",
                     cardholderName: data.payment.cardholderName,
                 },
                 items: items.map(item => ({ id: item.id, quantity: item.quantity })),

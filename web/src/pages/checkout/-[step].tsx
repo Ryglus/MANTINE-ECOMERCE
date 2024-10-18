@@ -96,7 +96,7 @@ export default function CheckoutPage() {
                         />
                     </Suspense>
 
-                    <Group p="apart" mt="md">
+                    <Group justify={"space-between"} my="lg">
                         <Button onClick={() => { handleStepMove(currentStepIndex - 1); }} disabled={currentStepIndex === 0}>
                             {backButtonLabel}
                         </Button>

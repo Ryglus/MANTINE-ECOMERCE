@@ -18,9 +18,9 @@ const theme = createTheme({
     luminanceThreshold: 0.4,
     colors: {
         primary: ['#f3eff5', '#e6e0eb', '#cec0d8', '#b5a1c4', '#9d82b0', '#84629d', '#6a4f7d', '#4f3b5e', '#35273f', '#1a141f'],
-        secondary: ['#eff1f5', '#e0e3eb', '#c0c7d8', '#a1abc4', '#8290b0', '#62749d', '#4f5d7d', '#3b455e', '#272e3f', '#14171f'],
         bg: ['#f3eff5', '#e6e0eb', '#cec0d8', '#b5a1c4', '#9d82b0', '#84629d', '#6a4f7d', '#4f3b5e', '#35273f', '#1a141f'],
         text: ['#eff1f5', '#dfe3ec', '#c0c7d8', '#a0abc5', '#818eb1', '#61729e', '#4e5b7e', '#3a455f', '#272e3f', '#131720'],
+        secondary: ['#eff1f5', '#e0e3eb', '#c0c7d8', '#a1abc4', '#8290b0', '#62749d', '#4f5d7d', '#3b455e', '#272e3f', '#14171f'],
     },
     components: {
         LoadingOverlay: {
@@ -32,6 +32,7 @@ const theme = createTheme({
             defaultProps: { color: 'bg.6' },
         },
     },
+    cursorType: 'pointer',
 });
 
 const cssVariablesResolver: CSSVariablesResolver = (theme) => ({

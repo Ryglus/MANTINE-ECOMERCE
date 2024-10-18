@@ -9,6 +9,8 @@ export interface MinifiedOrderData {
         phone: string;
     };
     payment: {
+        paymentMethod: string;
+        status: string;
         cardholderName: string;
     };
     items: Array<{ id: number; quantity: number }>;

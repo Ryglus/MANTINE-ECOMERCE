@@ -1,15 +1,17 @@
-import { Card, Group, Loader, Text, Title, Button, Container } from '@mantine/core';
-import {useGetUserInfo} from "../../../lib/api/user.api";
-import {useAuthStore} from "../../../store/auth-store";
-import {useEffect} from "react";
-import MainLayout from "../../../layouts/index-layout";
+import {Avatar, Box, Button, Container, Divider, Loader, Stack, Text, Title} from '@mantine/core';
+import {useGetUserInfo} from '../../../lib/api/user.api';
+import {useAuthStore} from '../../../store/auth-store';
+import {useEffect} from 'react';
+import MainLayout from '../../../layouts/index-layout';
+import {IconUserEdit} from '@tabler/icons-react';
+import {Link} from "react-router-dom";
 
 const AccountDetail = () => {
     const { mutate, isPending, isError } = useGetUserInfo();
-
     const user = useAuthStore((state) => state.user);
+
     useEffect(() => {
-        mutate(1)
+        mutate(1);
     }, [mutate]);
 
     if (isPending) {
@@ -26,7 +28,9 @@ const AccountDetail = () => {
         return (
             <MainLayout>
                 <Container>
-                    <Text c="red">Error fetching user details.</Text>
+                    <Text c="red" size="lg">
+                        Error fetching user details.
+                    </Text>
                 </Container>
             </MainLayout>
         );
@@ -34,47 +38,62 @@ const AccountDetail = () => {
 
     return (
         <MainLayout>
-            <Container size="md" my="lg">
-                <Card shadow="md" radius="md" p="lg" withBorder>
-                    <Title order={2} mb="lg">
-                        Account Details
+            <Container size="sm" my="lg">
+                <Container p="xl" style={{ position: 'relative' }}>
+                    <Box style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+                        <Avatar
+                            size={120}
+                            radius="100%"
+                            src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${user?.name.firstname}-${user?.name.lastname}`}
+                            alt={`${user?.name.firstname} ${user?.name.lastname}`}
+                        />
+                    </Box>
+
+                    <Title className={"text-center"} order={2} size={32} mb="lg">
+                        {user?.name.firstname} {user?.name.lastname}
                     </Title>
 
-                    <Group p="apart" grow>
-                        <Text size="lg" fw={500}>
-                            Name: {user?.name.firstname} {user?.name.lastname}
-                        </Text>
-                    </Group>
+                    <Divider mb="lg" />
 
-                    <Group p="apart" grow>
+                    <Stack dir="column" gap="xs" align="flex-start">
                         <Text size="lg" fw={500}>
-                            Username: {user?.username}
+                            <strong>Username:</strong> {user?.username}
                         </Text>
-                    </Group>
-
-                    <Group p="apart" grow>
                         <Text size="lg" fw={500}>
-                            Email: {user?.email}
+                            <strong>Email:</strong> {user?.email}
                         </Text>
-                    </Group>
-
-                    <Group p="apart" grow>
                         <Text size="lg" fw={500}>
-                            Phone: {user?.phone}
+                            <strong>Phone:</strong> {user?.phone}
                         </Text>
-                    </Group>
-
-                    <Group p="apart" grow mt="lg">
                         <Text size="lg" fw={500}>
-                            Address: {user?.address?.street}, {user?.address?.city}
+                            <strong>Address:</strong> {user?.address?.street}, {user?.address?.city}
                         </Text>
-                    </Group>
+                    </Stack>
 
-                    <Button mt="xl" color="blue">
+                    <Button
+                        fullWidth
+                        mt="xl"
+                        size="lg"
+                        radius="md"
+                        leftSection={<IconUserEdit size={20} />}
+                        styles={{ root: { backgroundColor: '#4a4066' } }}
+                    >
                         Edit Account
                     </Button>
-                </Card>
+                    <Button
+                        component={Link}
+                        to={'/dashboard'}
+                        mt="xl"
+                        fullWidth
+                        size="md"
+                        color="gray"
+                        radius="md"
+                    >
+                        Go to Admin
+                    </Button>
+                </Container>
             </Container>
+
         </MainLayout>
     );
 };

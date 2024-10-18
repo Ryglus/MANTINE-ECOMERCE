@@ -10,6 +10,8 @@ export type Path =
   | `/account/register`
   | `/cart`
   | `/checkout/:step?`
+  | `/dashboard`
+  | `/dashboard/:section?`
   | `/orders`
   | `/orders/:hash`
   | `/products/:category/:id/:slug?`
@@ -17,6 +19,7 @@ export type Path =
 
 export type Params = {
   '/checkout/:step?': { step?: string }
+  '/dashboard/:section?': { section?: string }
   '/orders/:hash': { hash: string }
   '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
   '/products/:category?': { category?: string }

@@ -83,7 +83,6 @@ export default function ProductIncartCard({
                 </ActionIcon>
             )}
 
-            {/* Use pointer-events-none to disable clicks on the link itself */}
             <Link
                 to={buildProductUrl(product.category, product.id, product.title)}
                 className="absolute inset-0 z-10"
