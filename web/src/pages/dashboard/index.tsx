@@ -1,145 +1,113 @@
-import {Card, Divider, Grid, Group, Stack, Text, Title} from '@mantine/core';
-import {IconArrowUpRight, IconBox, IconPackage, IconShoppingCart, IconTrendingUp, IconUsers} from '@tabler/icons-react';
-import {LineChart} from "@mantine/charts";
-
-const salesData = [
-    { date: 'Mar 22', sales: 1000 },
-    { date: 'Mar 23', sales: 1500 },
-    { date: 'Mar 24', sales: 1200 },
-    { date: 'Mar 25', sales: 2000 },
-    { date: 'Mar 26', sales: 1800 },
-];
+import React from 'react';
+import {Center, Grid, Loader, Text} from '@mantine/core';
+import {StatCard} from "./_components/_cards/stat.card";
+import {LineChartCard} from "./_components/_cards/line-chart.card";
+import {useOrderData} from "../../lib/api/order.api";
+import {Product} from "../../lib/api/dto/product.dto";
+// @ts-ignore
+import {DateTime} from 'luxon';
+import {IconUsers} from "@tabler/icons-react";
 
 export default function DashboardIndexPage() {
+    const { ordersQuery, usersQuery, productsQuery } = useOrderData();
+
+    if (ordersQuery.isLoading || usersQuery.isLoading || productsQuery.isLoading) {
+        return (
+            <Center style={{ height: '100vh' }}>
+                <Loader size="lg" />
+            </Center>
+        );
+    }
+
+    if (ordersQuery.isError || usersQuery.isError || productsQuery.isError) {
+        return (
+            <Center style={{ height: '100vh' }}>
+                <Text c="red">Failed to load data. Please try again later.</Text>
+            </Center>
+        );
+    }
+
+    const products = productsQuery.data || [];
+    const orders = ordersQuery.data || [];
+    const users = usersQuery.data || [];
+
+    const getProductPriceById = (id: number): number => {
+        const product = products.find((p: Product) => p.id === id);
+        return product ? product.price : 0;
+    };
+
+
+    const salesByDate: Record<string, number> = orders.reduce((acc: Record<string, number>, order) => {
+        const formattedDate = DateTime.fromISO(order.date).toISODate();
+
+        const totalSalesForOrder = order.products.reduce((sum, product) => {
+            return sum + (getProductPriceById(product.productId) * product.quantity);
+        }, 0);
+
+        if (!acc[formattedDate]) {
+            acc[formattedDate] = totalSalesForOrder;
+        } else {
+            acc[formattedDate] += totalSalesForOrder;
+        }
+
+        return acc;
+    }, {});
+
+    const salesData = Object.entries(salesByDate).map(([date, sales]) => ({
+        date,
+        Sales: sales,
+    }));
+
+    const totalSales = products.reduce((acc, product) => acc + product.price, 0);
+    const ordersCount = orders.length;
+    const customersCount = users.length;
+    const lowInventoryCount = products.filter(product => product.rating.count < 5).length;
+
+    //const topProducts = products.sort((a, b) => b.price - a.price).slice(0, 3);
+/*
+    const recentOrders = orders.slice(0, 3).map((order) => ({
+        id: order.id.toString(),
+        amount: order.products.reduce((acc, prod) => acc + prod.quantity, 0) * 100, // Example pricing
+    }));
+*/
     return (
-        <div style={{ padding: '20px' }}>
-            <Title order={2} mb="lg">
-                Overview
-            </Title>
+        <Grid gutter="lg">
+            <Grid.Col span={3}>
+                <StatCard
+                    title="New Customers"
+                    value={lowInventoryCount.toString()}
+                    percentageChange="+8% from last week"
+                    icon={<IconUsers size={24} />}
+                />
+            </Grid.Col>
+            <Grid.Col span={3}>
+                <StatCard
+                    title="New Customers"
+                    value={ordersCount.toString()}
+                    percentageChange="+8% from last week"
+                    icon={<IconUsers size={24} />}
+                />
+            </Grid.Col>
+            <Grid.Col span={3}>
+                <StatCard
+                    title="New Customers"
+                    value={totalSales.toString()}
+                    percentageChange="+8% from last week"
+                    icon={<IconUsers size={24} />}
+                />
+            </Grid.Col>
+            <Grid.Col span={3}>
+                <StatCard
+                    title="New Customers"
+                    value={customersCount.toString()}
+                    percentageChange="+8% from last week"
+                    icon={<IconUsers size={24} />}
+                />
+            </Grid.Col>
+            <Grid.Col span={12}>
+                <LineChartCard data={salesData} />
+            </Grid.Col>
 
-            <Grid gutter="lg">
-                <Grid.Col span={3}>
-                    <Card shadow="md" p="lg">
-                        <Group gap="apart">
-                            <Text fw={700} size="lg">Total Sales</Text>
-                            <IconTrendingUp size={24} />
-                        </Group>
-                        <Text size="xl" fw={700} mt="md">$12,345</Text>
-                        <Group gap="xs" mt="md">
-                            <IconArrowUpRight size={16} color="green" />
-                            <Text c="green">+10% from last week</Text>
-                        </Group>
-                    </Card>
-                </Grid.Col>
-
-                {/* Orders Summary */}
-                <Grid.Col span={3}>
-                    <Card shadow="md" p="lg">
-                        <Group gap="apart">
-                            <Text fw={700} size="lg">Orders</Text>
-                            <IconShoppingCart size={24} />
-                        </Group>
-                        <Text size="xl" fw={700} mt="md">1,234</Text>
-                        <Group gap="xs" mt="md">
-                            <IconArrowUpRight size={16} color="green" />
-                            <Text c="green">+5% from last week</Text>
-                        </Group>
-                    </Card>
-                </Grid.Col>
-
-                {/* New Customers */}
-                <Grid.Col span={3}>
-                    <Card shadow="md" p="lg">
-                        <Group gap="apart">
-                            <Text fw={700} size="lg">New Customers</Text>
-                            <IconUsers size={24} />
-                        </Group>
-                        <Text size="xl" fw={700} mt="md">345</Text>
-                        <Group gap="xs" mt="md">
-                            <IconArrowUpRight size={16} color="green" />
-                            <Text color="green">+8% from last week</Text>
-                        </Group>
-                    </Card>
-                </Grid.Col>
-
-                {/* Inventory Summary */}
-                <Grid.Col span={3}>
-                    <Card shadow="md" p="lg">
-                        <Group gap="apart">
-                            <Text fw={700} size="lg">Low Inventory</Text>
-                            <IconPackage size={24} />
-                        </Group>
-                        <Text size="xl" fw={700} mt="md">25 items</Text>
-                        <Group gap="xs" mt="md">
-                            <IconBox size={16} color="red" />
-                            <Text color="red">Restock needed</Text>
-                        </Group>
-                    </Card>
-                </Grid.Col>
-
-                {/* Sales Chart */}
-                <Grid.Col span={12}>
-                    <Card shadow="md" p="lg">
-                        <Title order={4}>Sales Over Time</Title>
-                        <Divider my="sm" />
-                        <LineChart
-                            h={300}
-                            data={salesData}
-                            dataKey="date"
-                            series={[{ name: 'Sales', label: 'Sales in USD', color: 'blue.6' }]}
-                            yAxisProps={{ label: 'Sales', domain: [0, 3000] }}
-                            xAxisProps={{ label: 'Date' }}
-                            withLegend
-                            withPointLabels
-                            valueFormatter={(value) => `$${value.toLocaleString()}`}
-                        />
-                    </Card>
-                </Grid.Col>
-
-                {/* Top Products */}
-                <Grid.Col span={6}>
-                    <Card shadow="md" p="lg">
-                        <Title order={4}>Top Products</Title>
-                        <Divider my="sm" />
-                        <Stack gap="sm">
-                            <Group gap="apart">
-                                <Text>Product A</Text>
-                                <Text fw={700}>$5,000</Text>
-                            </Group>
-                            <Group gap="apart">
-                                <Text>Product B</Text>
-                                <Text fw={700}>$4,200</Text>
-                            </Group>
-                            <Group gap="apart">
-                                <Text>Product C</Text>
-                                <Text fw={700}>$3,800</Text>
-                            </Group>
-                        </Stack>
-                    </Card>
-                </Grid.Col>
-
-                {/* Recent Orders */}
-                <Grid.Col span={6}>
-                    <Card shadow="md" p="lg">
-                        <Title order={4}>Recent Orders</Title>
-                        <Divider my="sm" />
-                        <Stack gap="sm">
-                            <Group gap="apart">
-                                <Text>Order #12345</Text>
-                                <Text fw={700}>$200</Text>
-                            </Group>
-                            <Group gap="apart">
-                                <Text>Order #12346</Text>
-                                <Text fw={700}>$150</Text>
-                            </Group>
-                            <Group gap="apart">
-                                <Text>Order #12347</Text>
-                                <Text fw={700}>$400</Text>
-                            </Group>
-                        </Stack>
-                    </Card>
-                </Grid.Col>
-            </Grid>
-        </div>
+        </Grid>
     );
 }
