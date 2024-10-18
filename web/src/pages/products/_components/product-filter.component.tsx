@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Accordion, Badge, Button, Divider, Group, RangeSlider, Rating, Select, Stack, TextInput} from '@mantine/core';
 import {Link} from "react-router-dom";
 
@@ -31,16 +31,37 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                                                          handleCategoryChange,
                                                          clearFilters,
                                                      }) => {
+    const [searchTerm, setSearchTerm] = useState(nameFilter);
+    const [localPriceRange, setLocalPriceRange] = useState<[number, number]>([minPrice || 0, maxPrice || 1000]);
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            setNameFilter(searchTerm);
+        }, 500);
+
+        return () => clearTimeout(debounceTimer);
+    }, [searchTerm, setNameFilter]);
+
+    const handlePriceRangeChangeEnd = (range: [number, number]) => {
+        const debounceTimer = setTimeout(() => {
+            setMinPrice(range[0]);
+            setMaxPrice(range[1]);
+        }, 500);
+
+        return () => clearTimeout(debounceTimer);
+    };
 
     const handleClearFilter = (filterType: string) => {
         switch (filterType) {
             case 'name':
+                setSearchTerm('');
                 setNameFilter('');
                 break;
             case 'category':
                 handleCategoryChange(null);
                 break;
             case 'price':
+                setLocalPriceRange([0, 1000]);
                 setMinPrice(undefined);
                 setMaxPrice(undefined);
                 break;
@@ -84,14 +105,13 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                     <Accordion.Control>
                         Filters
                     </Accordion.Control>
-
                     <Accordion.Panel>
                         <Stack>
                             <TextInput
                                 label="Search by name"
                                 placeholder="Enter product name"
-                                value={nameFilter}
-                                onChange={(e) => setNameFilter(e.currentTarget.value)}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.currentTarget.value)}
                                 size="md"
                             />
                             <Divider label="Category" labelPosition="center" />
@@ -107,8 +127,9 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                             <Divider label="Price Range" labelPosition="center" />
                             <RangeSlider
                                 my={"lg"}
-                                value={[minPrice || 0, maxPrice || 1000]}
-                                onChange={(val) => { setMinPrice(val[0]); setMaxPrice(val[1]); }}
+                                value={localPriceRange}
+                                onChange={setLocalPriceRange}
+                                onChangeEnd={handlePriceRangeChangeEnd}
                                 min={0}
                                 max={1000}
                                 step={10}
