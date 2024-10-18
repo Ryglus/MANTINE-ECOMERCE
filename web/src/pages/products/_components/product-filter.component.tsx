@@ -1,5 +1,6 @@
 import React from 'react';
-import {Accordion, Button, Divider, RangeSlider, Rating, Select, Stack, TextInput} from '@mantine/core';
+import {Accordion, Badge, Button, Divider, Group, RangeSlider, Rating, Select, Stack, TextInput} from '@mantine/core';
+import {Link} from "react-router-dom";
 
 interface ProductFilterProps {
     nameFilter: string;
@@ -30,6 +31,52 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                                                          handleCategoryChange,
                                                          clearFilters,
                                                      }) => {
+
+    const handleClearFilter = (filterType: string) => {
+        switch (filterType) {
+            case 'name':
+                setNameFilter('');
+                break;
+            case 'category':
+                handleCategoryChange(null);
+                break;
+            case 'price':
+                setMinPrice(undefined);
+                setMaxPrice(undefined);
+                break;
+            case 'rating':
+                setMinRating(undefined);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const renderActiveFilters = () => (
+        <Group>
+            {nameFilter && (
+                <Badge className={"cursor-pointer"} variant="outline" color="blue" onClick={() => handleClearFilter('name')}>
+                    Name: {nameFilter} &times;
+                </Badge>
+            )}
+            {categoryFilter && (
+                <Badge className={"cursor-pointer"} variant="outline" color="teal" onClick={() => handleClearFilter('category')}>
+                    Category: {categoryFilter} &times;
+                </Badge>
+            )}
+            {(minPrice !== undefined && maxPrice !== undefined) && (
+                <Badge className={"cursor-pointer"} variant="outline" color="grape" onClick={() => handleClearFilter('price')}>
+                    Price: ${minPrice} - ${maxPrice} &times;
+                </Badge>
+            )}
+            {minRating && (
+                <Badge className={"cursor-pointer"} variant="outline" color="orange" onClick={() => handleClearFilter('rating')}>
+                    Rating: {minRating}+ &times;
+                </Badge>
+            )}
+        </Group>
+    );
+
     return (
         <div>
             <Accordion defaultValue="filters">
@@ -60,8 +107,8 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                             <Divider label="Price Range" labelPosition="center" />
                             <RangeSlider
                                 my={"lg"}
-                                defaultValue={[minPrice || 0, maxPrice || 0]}
-                                onChange={(val) => {setMinPrice(val[0]); setMaxPrice(val[1]);}}
+                                value={[minPrice || 0, maxPrice || 1000]}
+                                onChange={(val) => { setMinPrice(val[0]); setMaxPrice(val[1]); }}
                                 min={0}
                                 max={1000}
                                 step={10}
@@ -75,8 +122,12 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                             />
                             <Divider label="Rating" labelPosition="center" />
                             <Rating value={minRating} fractions={2} onChange={(value) => setMinRating(Number(value))} />
-                            <Button fullWidth variant="outline" color="red" onClick={clearFilters} mt="sm">
-                                Clear Filters
+
+                            <Divider label="Active filters" labelPosition="center" />
+                            {renderActiveFilters()}
+                            <Divider />
+                            <Button component={Link} to={"/products"} fullWidth variant="outline" color="red" onClick={clearFilters}>
+                                Clear All Filters
                             </Button>
                         </Stack>
                     </Accordion.Panel>
