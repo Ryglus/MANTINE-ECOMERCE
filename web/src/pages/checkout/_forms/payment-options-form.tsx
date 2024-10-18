@@ -113,7 +113,6 @@ export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
 
     return (
         <Stack>
-            {/* Modernized Payment Method Selector */}
             <Flex justify={"center"} gap={"lg"} mb="md">
                 {paymentMethods.map((method) => (
                     <Button
