@@ -1,8 +1,9 @@
 import {useEffect} from 'react';
-import {Card, Stack} from '@mantine/core';
-import {StepComponentProps} from "../../../lib/api/dto/checkout.dto";
+import {Stack} from '@mantine/core';
+import {StepComponentProps} from '../../../lib/api/dto/checkout.dto';
 import {useForm} from '@mantine/form';
 import {PaymentOptionsForm} from "../_forms";
+
 
 export default function PaymentStep({ onValidChange, data }: StepComponentProps) {
     const paymentData = data?.payment || null;
@@ -38,15 +39,13 @@ export default function PaymentStep({ onValidChange, data }: StepComponentProps)
     useEffect(() => {
         const isValid = form.isValid();
         onValidChange?.(isValid, {
-            ...form.values
+            ...form.values,
         });
     }, [form.values]);
 
     return (
         <Stack>
-            <Card shadow="sm" p="lg" withBorder>
-                <PaymentOptionsForm form={form} />
-            </Card>
+            <PaymentOptionsForm form={form} />
         </Stack>
     );
 }

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {Card, Group, Radio, RadioGroup, Stack, Text, TextInput} from '@mantine/core';
+import {Button, Flex, SimpleGrid, Stack, Text, TextInput} from '@mantine/core';
 import {UseFormReturnType} from '@mantine/form';
+import {IconBrandPaypal, IconBuildingBank, IconCreditCard} from '@tabler/icons-react';
 
 interface PaymentOptionsFormProps {
     form: UseFormReturnType<{
@@ -13,9 +14,9 @@ interface PaymentOptionsFormProps {
 }
 
 const paymentMethods = [
-    { label: 'Credit Card', value: 'credit-card' },
-    { label: 'PayPal', value: 'paypal' },
-    { label: 'Bank Transfer', value: 'bank-transfer' },
+    { label: 'Credit Card', value: 'credit-card', icon: IconCreditCard },
+    { label: 'PayPal', value: 'paypal', icon: IconBrandPaypal },
+    { label: 'Bank Transfer', value: 'bank-transfer', icon: IconBuildingBank },
 ];
 
 const formatCardNumber = (value: string) => {
@@ -29,7 +30,9 @@ const formatExpiryDate = (value: string) => {
 };
 
 export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(form.values.selectedPaymentMethod || 'credit-card');
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
+        form.values.selectedPaymentMethod || 'credit-card'
+    );
 
     const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const formattedCardNumber = formatCardNumber(e.target.value);
@@ -60,7 +63,7 @@ export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
                 maxLength={19}
                 required
             />
-            <Group>
+            <SimpleGrid cols={2}>
                 <TextInput
                     label="Expiry Date"
                     placeholder="MM/YY"
@@ -80,13 +83,15 @@ export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
                     maxLength={3}
                     required
                 />
-            </Group>
+            </SimpleGrid>
         </>
     );
 
-    const renderPayPalFields = () => <Text>Redirect to PayPal for payment</Text>;
+    const renderPayPalFields = () => <Text>Redirecting to PayPal for payment...</Text>;
 
-    const renderBankTransferFields = () => <Text>Bank transfer instructions will be provided after submission</Text>;
+    const renderBankTransferFields = () => (
+        <Text>Instructions for bank transfer will be sent after submission.</Text>
+    );
 
     const renderPaymentForm = () => {
         switch (selectedPaymentMethod) {
@@ -108,21 +113,21 @@ export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
 
     return (
         <Stack>
-            <Card shadow="sm" p="lg" withBorder>
-                <RadioGroup
-                    label="Select Payment Method"
-                    value={selectedPaymentMethod}
-                    onChange={handlePaymentMethodChange}
-                >
-                    {paymentMethods.map((method) => (
-                        <Radio key={method.value} value={method.value} label={method.label} />
-                    ))}
-                </RadioGroup>
+            {/* Modernized Payment Method Selector */}
+            <Flex justify={"center"} gap={"lg"} mb="md">
+                {paymentMethods.map((method) => (
+                    <Button
+                        key={method.value}
+                        variant={selectedPaymentMethod === method.value ? 'filled' : 'outline'}
+                        leftSection={<method.icon size={20} />}
+                        onClick={() => handlePaymentMethodChange(method.value)}
+                    >
+                        {method.label}
+                    </Button>
+                ))}
+            </Flex>
 
-                <form onSubmit={form.onSubmit(() => {})}>
-                    {renderPaymentForm()}
-                </form>
-            </Card>
+            <form onSubmit={form.onSubmit(() => {})}>{renderPaymentForm()}</form>
         </Stack>
     );
 }
