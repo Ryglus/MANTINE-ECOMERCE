@@ -12,6 +12,7 @@ export type Path =
   | `/checkout/:step?`
   | `/dashboard`
   | `/dashboard/:section?`
+  | `/dashboard/products`
   | `/orders`
   | `/orders/:hash`
   | `/products/:category/:id/:slug?`
