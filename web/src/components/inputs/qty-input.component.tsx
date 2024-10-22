@@ -1,8 +1,7 @@
-import {FC} from 'react';
-import {Button, NumberInput} from '@mantine/core';
+import {Button, ButtonGroupProps, NumberInput} from '@mantine/core';
 import {IconMinus, IconPlus} from '@tabler/icons-react';
 
-interface QtyInputProps {
+interface QtyInputProps extends ButtonGroupProps {
     min?: number;
     max?: number;
     step?: number;
@@ -12,16 +11,20 @@ interface QtyInputProps {
     className?: string;
 }
 
-const QtyInput: FC<QtyInputProps> = ({
-                                         min = 1,
-                                         max = 99,
-                                         step = 1,
-                                         value,
-                                         onChange,
-                                         size = 'md',
-                                         className,
-                                         ...rest
-                                     }) => {
+export default function QtyInput({
+        min = 1,
+        max = 99,
+        step = 1,
+        value,
+        onChange,
+        size = 'md',
+        className,
+        ...rest
+    }: QtyInputProps) {
+
+    const iconSize = size === 'lg' ? 20 : size === 'sm' ? 14 : 18;
+    const elementWidth = size === 'lg' ? 70 : size === 'sm' ? 50 : 60;
+
     const handleValueChange = (action: 'increment' | 'decrement') => {
         const newValue =
             action === 'increment'
@@ -30,11 +33,8 @@ const QtyInput: FC<QtyInputProps> = ({
         onChange(newValue);
     };
 
-    const iconSize = size === 'lg' ? 20 : size === 'sm' ? 14 : 18;
-    const elementWidth = size === 'lg' ? 70 : size === 'sm' ? 50 : 60;
-
-    const DecButton = () => {
-        return (
+    return (
+        <Button.Group className={className} {...rest}>
             <Button
                 variant="filled"
                 size={size}
@@ -45,27 +45,6 @@ const QtyInput: FC<QtyInputProps> = ({
             >
                 <IconMinus size={iconSize} />
             </Button>
-        );
-    };
-
-    const IncButton = () => {
-        return (
-            <Button
-                variant="filled"
-                size={size}
-                style={{ width: elementWidth }}
-                className={value >= max ? "" : "hover:scale-110 transition-transform"}
-                onClick={() => handleValueChange('increment')}
-                disabled={value >= max}
-            >
-                <IconPlus size={iconSize} />
-            </Button>
-        );
-    };
-
-    return (
-        <Button.Group className={className} {...rest}>
-            <DecButton />
             <NumberInput
                 value={value}
                 onChange={(val) => onChange(Math.min(Math.max(Number(val), min), max))}
@@ -79,9 +58,16 @@ const QtyInput: FC<QtyInputProps> = ({
                     input: { textAlign: 'center', width: '100%', fontWeight: '500', border: "none", borderRadius: "0" },
                 }}
             />
-            <IncButton />
+            <Button
+                variant="filled"
+                size={size}
+                style={{ width: elementWidth }}
+                className={value >= max ? "" : "hover:scale-110 transition-transform"}
+                onClick={() => handleValueChange('increment')}
+                disabled={value >= max}
+            >
+                <IconPlus size={iconSize} />
+            </Button>
         </Button.Group>
     );
 };
-
-export default QtyInput;

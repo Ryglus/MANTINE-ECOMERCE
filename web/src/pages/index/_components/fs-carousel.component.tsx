@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useState} from 'react';
 import {Carousel, Embla} from '@mantine/carousel';
-import FsCarouselNavigation from "./fs-carousel-navigation.component";
-import SlideView1 from "./_slides/slide-1.component";
-import SlideView2 from "./_slides/slide-2.component";
-import SlideView3 from "./_slides/slide-3.component";
+import FsCarouselNavigation from './fs-carousel-navigation.component';
+import SlideView1 from './slides/slide-1.component';
+import SlideView2 from './slides/slide-2.component';
+import SlideView3 from './slides/slide-3.component';
 
 export default function FsCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -17,25 +17,19 @@ export default function FsCarousel() {
             id: 1,
             src: '/slides/slide3.webp',
             alt: 'Slide 1',
-            content: (
-                <SlideView1 index={0} dragOffset={dragOffset} />
-            ),
+            content: <SlideView1 index={0} dragOffset={dragOffset} />,
         },
         {
             id: 2,
             src: '/slides/slide2.webp',
             alt: 'Slide 2',
-            content: (
-                <SlideView2 index={0.5} dragOffset={dragOffset} />
-            ),
+            content: <SlideView2 index={0.5} dragOffset={dragOffset} />,
         },
         {
             id: 3,
             src: '/slides/slide6.webp',
             alt: 'Slide 3',
-            content: (
-                <SlideView3 index={1} dragOffset={dragOffset} />
-            ),
+            content: <SlideView3 index={1} dragOffset={dragOffset} />,
         },
     ];
 
@@ -56,12 +50,12 @@ export default function FsCarousel() {
     useEffect(() => {
         if (embla) {
             embla.on('select', updateButtonStates);
-            embla.on('pointerUp', () => document.body.style.cursor = 'default');
-            embla.on('pointerDown', () => document.body.style.cursor = 'grabbing');
+            embla.on('pointerUp', () => (document.body.style.cursor = 'default'));
+            embla.on('pointerDown', () => (document.body.style.cursor = 'grabbing'));
             embla.on('scroll', handleScroll);
             updateButtonStates();
         }
-    }, [embla, updateButtonStates]);
+    }, [embla, updateButtonStates, handleScroll]);
 
     return (
         <div className="relative w-full h-screen">
@@ -75,12 +69,9 @@ export default function FsCarousel() {
                 {slides.map((slide) => (
                     <Carousel.Slide
                         key={slide.id}
-                        className="relative w-full h-full"
+                        className="relative w-full h-dvh bg-cover object-cover"
                         style={{
-                            height: '100vh',
                             backgroundImage: `url(${slide.src})`,
-                            backgroundSize: 'cover',
-                            objectFit: 'cover',
                             backgroundPosition: 'top center',
                         }}
                     >
@@ -88,7 +79,13 @@ export default function FsCarousel() {
                     </Carousel.Slide>
                 ))}
             </Carousel>
-            <FsCarouselNavigation embla={embla} canScrollNext={canScrollNext} canScrollPrev={canScrollPrev} currentIndex={currentIndex} slides={slides.length} />
+            <FsCarouselNavigation
+                embla={embla}
+                canScrollNext={canScrollNext}
+                canScrollPrev={canScrollPrev}
+                currentIndex={currentIndex}
+                slides={slides.length}
+            />
         </div>
     );
 }

@@ -1,12 +1,13 @@
 import {useParams} from '../../router';
-import {Button, Container, Group, LoadingOverlay, Stepper, Title} from '@mantine/core';
+import {Button, Container, Flex, LoadingOverlay, Stepper, Title} from '@mantine/core';
 import {Suspense, useEffect, useState} from 'react';
 import MainLayout from '../../layouts/index-layout';
 import {useCartStore} from '../../store/cart-store';
 import {useNavigate} from 'react-router-dom';
-import {DeliveryData, PaymentData, StepData} from "../../lib/api/dto/checkout.dto";
-import {ConfirmationStep, DeliveryStep, PaymentStep, ReviewStep} from "./_steps";
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import {DeliveryData, PaymentData, StepData} from '../../lib/api/dto/checkout.dto';
+import {ConfirmationStep, DeliveryStep, PaymentStep, ReviewStep} from './_steps';
+import SvgPageBg from '../../components/common/svg-page-bg.component';
+import useDynamicTitle from '../../hooks/useDynamicTitle';
 
 const steps = {
     delivery: {
@@ -32,7 +33,7 @@ const steps = {
         nextButtonLabel: 'Return to Shopping',
         backButtonLabel: 'Back',
         onNext: (navigate: (path: string) => void) => navigate('/products'),
-    }
+    },
 };
 
 const stepOrder = Object.keys(steps);
@@ -44,8 +45,12 @@ export default function CheckoutPage() {
     const uniqueItemsCount = cartItems.length;
 
     const [activeStep, setActiveStep] = useState(0);
+    useDynamicTitle(`Checkout - ${stepOrder[activeStep]}`);
     const [stepData, setStepData] = useState<StepData>({
-        delivery: null, payment: null, review: null, confirmation: null
+        delivery: null,
+        payment: null,
+        review: null,
+        confirmation: null,
     });
     const [isStepValid, setIsStepValid] = useState(false);
 
@@ -53,19 +58,23 @@ export default function CheckoutPage() {
     const currentStepIndex = stepOrder.indexOf(currentStep);
 
     useEffect(() => {
-        if (uniqueItemsCount < 1 && activeStep < stepOrder.length-1) {
+        if (uniqueItemsCount < 1 && activeStep < stepOrder.length - 2) {
             navigate('/cart');
         } else {
             setActiveStep(currentStepIndex);
         }
-    }, [currentStepIndex]);
+    }, [currentStepIndex, uniqueItemsCount, activeStep, navigate]);
 
     const handleStepMove = (toPageIndex: number) => {
         setActiveStep(currentStepIndex);
         navigate(`/checkout/${stepOrder[toPageIndex]}`);
     };
 
-    const handleStepValidation = <T extends keyof StepData>(isValid: boolean, step: T, data: StepData[T]) => {
+    const handleStepValidation = <T extends keyof StepData>(
+        isValid: boolean,
+        step: T,
+        data: StepData[T]
+    ) => {
         setIsStepValid(isValid);
         setStepData((prev) => ({
             ...prev,
@@ -73,7 +82,8 @@ export default function CheckoutPage() {
         }));
     };
 
-    const { component: StepComponent, nextButtonLabel, backButtonLabel, onNext } = steps[currentStep as keyof typeof steps];
+    const { component: StepComponent, nextButtonLabel, backButtonLabel, onNext } =
+        steps[currentStep as keyof typeof steps];
 
     return (
         <SvgPageBg>
@@ -81,13 +91,20 @@ export default function CheckoutPage() {
                 <Container size="xl">
                     <Title>Checkout</Title>
 
-                    <Stepper active={activeStep} onStepClick={(value) => { handleStepMove(value); }} allowNextStepsSelect={false} size="md" mt="md" mb="lg">
+                    <Stepper
+                        active={activeStep}
+                        onStepClick={(value) => handleStepMove(value)}
+                        allowNextStepsSelect={false}
+                        size="md"
+                        mt="md"
+                        mb="lg"
+                    >
                         {stepOrder.map((step, index) => (
                             <Stepper.Step key={index} label={step.toUpperCase()} />
                         ))}
                     </Stepper>
 
-                    <Suspense fallback={<LoadingOverlay/>}>
+                    <Suspense fallback={<LoadingOverlay visible />}>
                         <StepComponent
                             data={stepData}
                             onValidChange={(isValid: boolean, data: DeliveryData | PaymentData | null) =>
@@ -96,15 +113,19 @@ export default function CheckoutPage() {
                         />
                     </Suspense>
 
-                    <Group justify={"space-between"} my="lg">
-                        <Button onClick={() => { handleStepMove(currentStepIndex - 1); }} disabled={currentStepIndex === 0}>
+                    <Flex justify="space-between" my="lg">
+                        <Button
+
+                            onClick={() => handleStepMove(currentStepIndex - 1)}
+                            disabled={currentStepIndex === 0}
+                        >
                             {backButtonLabel}
                         </Button>
 
                         <Button onClick={() => onNext(navigate)} disabled={!isStepValid}>
                             {nextButtonLabel}
                         </Button>
-                    </Group>
+                    </Flex>
                 </Container>
             </MainLayout>
         </SvgPageBg>

@@ -5,9 +5,7 @@ import {Product} from '../../../../lib/api/dto/product.dto';
 import {Order} from '../../../../lib/api/dto/order.dto';
 import {calculateCategoryDistribution} from '../../_utils/dashboard-data.utility';
 import {CardActions} from '../card-actions.menu.component';
-import {DashBoardTile} from './card.template';
-
-const colors = ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0', '#ffeb3b'];
+import DashBoardTile from './card.template';
 
 interface PieChartCardProps {
     orders: Order[];
@@ -18,14 +16,17 @@ interface PieChartCardProps {
     onSizeSelect: (size: { colSpan: number; rowSpan: number }) => void;
 }
 
-export const PieChartCard: React.FC<PieChartCardProps> = ({
-                                                              orders,
-                                                              products,
-                                                              timeframe,
-                                                              setTimeframe,
-                                                              gridSize,
-                                                              onSizeSelect
-                                                          }) => {
+const colors = ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0', '#ffeb3b'];
+export default function PieChartCard(
+    {
+        orders,
+        products,
+        timeframe,
+        setTimeframe,
+        gridSize,
+        onSizeSelect
+    }: PieChartCardProps) {
+
     const categoryData = calculateCategoryDistribution(orders, products, timeframe);
 
     const totalSales = categoryData.reduce((acc, { sales }) => acc + sales, 0);
@@ -36,7 +37,7 @@ export const PieChartCard: React.FC<PieChartCardProps> = ({
     }));
 
     const handleSizeChange = (newSize: number) => {
-        const rowSpan = newSize > 6 ? 2 : 1;
+        const rowSpan = newSize > 6 ? 1 : 2;
         onSizeSelect({ colSpan: newSize, rowSpan });
     };
 

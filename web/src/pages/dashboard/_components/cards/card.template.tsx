@@ -2,14 +2,14 @@ import React from 'react';
 import {Divider, Flex, Group, Paper} from '@mantine/core';
 
 
-interface DashBoardTileProps {
+interface DashboardTileProps {
     title: React.ReactNode;
     actions?: React.ReactNode;
     children: React.ReactNode;
     controls?: React.ReactNode;
 }
 
-export const DashBoardTile: React.FC<DashBoardTileProps> = ({ title, actions, children, controls }) => {
+export default function DashBoardTile({ title, actions, children, controls }:DashboardTileProps) {
     return (
         <Paper shadow="md" radius="md" p="lg">
             <Flex justify="space-between">

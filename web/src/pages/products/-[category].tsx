@@ -3,12 +3,13 @@ import {useParams} from "../../router";
 import {useFetchCategories, useFetchProductsByCategoryOrNot} from "../../lib/api/product.api";
 import MainLayout from "../../layouts/index-layout";
 import {Center, Container, Grid, GridCol, Loader, Pagination, SegmentedControl, Title} from "@mantine/core";
-import ProductCard from "../../components/_cards/product.card";
+import ProductCard from "../../components/cards/product.card";
 import {Product} from "../../lib/api/dto/product.dto";
 import {useNavigate} from "react-router-dom";
 import {NumberParam, StringParam, useQueryParams, withDefault} from 'use-query-params';
 import ProductFilter from "./_components/product-filter.component";
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import SvgPageBg from "../../components/common/svg-page-bg.component";
+import useDynamicTitle from "../../hooks/useDynamicTitle";
 
 const productsPerPageOptions = [
     { value: '3', label: '3 per page' },
@@ -18,6 +19,7 @@ const productsPerPageOptions = [
 
 export default function CategoryPage() {
     const { category } = useParams('/products/:category?');
+    useDynamicTitle(`${category || "Products"}`);
     const navigate = useNavigate();
     const { data: products, isLoading, error } = useFetchProductsByCategoryOrNot(category);
     const { data: categories } = useFetchCategories();

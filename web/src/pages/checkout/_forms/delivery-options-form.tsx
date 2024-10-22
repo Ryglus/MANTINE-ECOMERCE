@@ -8,7 +8,11 @@ interface DeliveryOptionsFormProps {
     form: { values: DeliveryData; setFieldValue: (field: string, value: any) => void };
 }
 
-export default function DeliveryOptionsForm({ form }: DeliveryOptionsFormProps) {
+export default function DeliveryOptionsForm(
+    {
+        form
+    }: DeliveryOptionsFormProps) {
+
     const [selectedOption, setSelectedOption] = useState(
         form.values.shippingOption?.company + '-' + form.values.shippingOption?.option.optionName
     );

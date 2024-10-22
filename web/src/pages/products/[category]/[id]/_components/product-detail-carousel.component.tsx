@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Carousel} from '@mantine/carousel';
 import {AspectRatio, Divider, Image, Transition} from '@mantine/core';
-import ThumbnailCard from './_cards/thumbnail.card';
-import {useImageBackgroundColor} from "../../../../../hooks/useImageBackgroundColor";
+import ThumbnailCard from './cards/thumbnail.card';
+import useImageBackgroundColor from "../../../../../hooks/useImageBackgroundColor";
 
 interface ProductDetailCarouselProps {
     images: string[];

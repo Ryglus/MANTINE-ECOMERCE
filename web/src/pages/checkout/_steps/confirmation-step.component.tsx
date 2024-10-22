@@ -6,7 +6,11 @@ import {useNavigate} from 'react-router-dom';
 import {generateOrderHash} from "../../../utils/otherHasher";
 import {MinifiedOrderData} from "../../../lib/api/dto/order.dto";
 
-export default function ConfirmationStep({ data }: StepComponentProps) {
+export default function ConfirmationStep(
+    {
+        data
+    }: StepComponentProps) {
+
     const { items, clearCart } = useCartStore();
     const navigate = useNavigate();
 

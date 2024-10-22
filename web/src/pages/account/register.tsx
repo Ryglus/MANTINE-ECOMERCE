@@ -3,10 +3,12 @@ import {Box, Button, Container, Divider, Group, PasswordInput, Stack, TextInput,
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 import {Link} from 'react-router-dom';
 import MainLayout from '../../layouts/index-layout';
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import SvgPageBg from '../../components/common/svg-page-bg.component';
+import useDynamicTitle from '../../hooks/useDynamicTitle';
 
-const Register = () => {
+export default function Register() {
     useAuthRedirect({ redirectToLoginOnUnauth: false });
+    useDynamicTitle('Register');
 
     const form = useForm({
         initialValues: {
@@ -21,16 +23,12 @@ const Register = () => {
     return (
         <SvgPageBg>
             <MainLayout>
-                <Container size="lg" style={{ padding: '60px 0' }}>
+                <Container size="sm" py="xl">
                     <Box
-                        style={{
-                            maxWidth: 500,
-                            margin: '0 auto',
-                            padding: '40px',
-                            borderRadius: '10px',
-                        }}
+                        mx="auto"
+                        p="xl"
                     >
-                        <Title order={2} size={30} mb="lg" className={"text-center"}>
+                        <Title order={2} size={30} mb="lg" className="text-center">
                             Create an Account
                         </Title>
 
@@ -79,7 +77,6 @@ const Register = () => {
                                     required
                                 />
 
-
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -87,7 +84,6 @@ const Register = () => {
                                     color="primary"
                                     radius="md"
                                     mt="lg"
-                                    styles={{ root: { height: 50 } }}
                                 >
                                     Register
                                 </Button>
@@ -101,7 +97,7 @@ const Register = () => {
                                 variant="outline"
                                 size="md"
                                 component={Link}
-                                to={'/account/login'}
+                                to="/account/login"
                             >
                                 Already have an account? Login
                             </Button>
@@ -111,6 +107,4 @@ const Register = () => {
             </MainLayout>
         </SvgPageBg>
     );
-};
-
-export default Register;
+}

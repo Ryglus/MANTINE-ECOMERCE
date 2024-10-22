@@ -5,7 +5,12 @@ import {useForm} from '@mantine/form';
 import {PaymentOptionsForm} from "../_forms";
 
 
-export default function PaymentStep({ onValidChange, data }: StepComponentProps) {
+export default function PaymentStep(
+    {
+        onValidChange,
+        data
+    }: StepComponentProps) {
+
     const paymentData = data?.payment || null;
 
     const form = useForm({

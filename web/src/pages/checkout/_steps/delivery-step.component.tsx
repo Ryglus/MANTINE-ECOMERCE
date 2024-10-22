@@ -6,7 +6,12 @@ import {useForm} from '@mantine/form';
 import {DeliveryAddressForm, DeliveryOptionsForm, PersonalInfoForm} from '../_forms';
 import {IconBuildingSkyscraper, IconMapPin} from '@tabler/icons-react';
 
-export default function DeliveryStep({ onValidChange, data }: StepComponentProps) {
+export default function DeliveryStep(
+    {
+        onValidChange,
+        data
+    }: StepComponentProps) {
+
     const { user } = useAuthStore();
     const deliveryData = data?.delivery || null;
     const [useSavedAddress, setUseSavedAddress] = useState(!!user?.address);

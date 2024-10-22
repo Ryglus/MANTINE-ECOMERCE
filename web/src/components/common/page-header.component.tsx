@@ -1,12 +1,12 @@
 import {useState} from 'react';
-import {ActionIcon, Button, Drawer, Image, Indicator, useMantineTheme} from '@mantine/core';
+import {ActionIcon, Button, Drawer, Image, Indicator, Paper, useMantineTheme} from '@mantine/core';
 import {IconLogout, IconMenu2, IconShoppingCart, IconUser} from '@tabler/icons-react';
-import {Link} from "react-router-dom";
-import {useScrollManager} from '../../hooks/useScrollManager';
+import {Link} from 'react-router-dom';
+import useScrollManager from '../../hooks/useScrollManager';
 import {useAuthStore} from '../../store/auth-store';
 import {useCartStore} from '../../store/cart-store';
 import {useViewportSize} from '@mantine/hooks';
-import ProductSearch from "../inputs/product-search-bar.component";
+import ProductSearch from '../inputs/product-search-bar.component';
 
 interface PageHeaderProps {
     takeSpace?: boolean;
@@ -20,7 +20,6 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
     const clearToken = useAuthStore((state) => state.clearAuth);
     const cartItems = useCartStore((state) => state.items);
     const uniqueItemsCount = cartItems.length;
-
     const { width } = useViewportSize();
 
     const handleLogout = () => {
@@ -54,30 +53,20 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
     return (
         <>
             {takeSpace && <div style={{ height: `${headerHeight+10}px` }} />}
-            <header
-                className="w-full fixed top-0 z-50 transition-all duration-300"
-                style={{
-                    height: `${headerHeight}px`,
-                    backgroundColor: isScrolled ? theme.colors.primary[9] : 'rgba(0, 0, 0, 0.1)',
-                    boxShadow: isScrolled ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
-                }}
+            <Paper
+                className={`w-full fixed top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}
+                bg={isScrolled ? 'primary.9' : 'rgba(0, 0, 0, 0.1)'}
+                style={{ height: `${headerHeight}px` }}
             >
                 <div className="max-w-[1480px] mx-auto flex justify-between items-center px-6 transition-all duration-300 ease-in-out">
-                    <div
-                        className="flex items-center"
-                        style={{
-                            height: `${logoContainerHeight}px`,
-                            width: 'auto',
-                        }}
-                    >
+                    <div className="flex items-center" style={{ height: `${logoContainerHeight}px` }}>
                         <Link to="/">
                             <Image
                                 src="/logo2edit.webp"
                                 alt="VelvetCove Logo"
-                                className="transition-all duration-300 transform"
+                                className="transition-all duration-300 transform w-auto"
                                 style={{
                                     height: `${logoSize}px`,
-                                    width: 'auto',
                                     transform: isScrolled ? 'scale(0.95)' : 'scale(1)',
                                 }}
                             />
@@ -85,13 +74,13 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                     </div>
 
                     <nav className="hidden lg:flex gap-6">
-                        <Button component={Link} to="/" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/" size="md" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Home
                         </Button>
-                        <Button component={Link} to="/products" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/products" size="md" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Shop
                         </Button>
-                        <Button component={Link} to="/contact" size={"md"} variant="subtle" color="primary" className="hover:scale-105 transition-transform">
+                        <Button component={Link} to="/contact" size="md" variant="subtle" color="primary" className="hover:scale-105 transition-transform">
                             Contact
                         </Button>
                     </nav>
@@ -103,11 +92,7 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
 
                         {uniqueItemsCount > 0 ? (
                             <Link to="/cart" className="hover:scale-110 transition-transform">
-                                <Indicator
-                                    color="red"
-                                    size="lg"
-                                    label={uniqueItemsCount}
-                                >
+                                <Indicator color="red" size="lg" label={uniqueItemsCount}>
                                     <ActionIcon size="lg" variant="light">
                                         <IconShoppingCart size={24} />
                                     </ActionIcon>
@@ -118,13 +103,13 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                                 <IconShoppingCart size={24} />
                             </ActionIcon>
                         )}
+
                         <ActionIcon component={Link} to="/account" size="lg" variant="light" className="hover:scale-110 transition-transform">
                             <IconUser />
                         </ActionIcon>
 
                         {token && (
-                            <ActionIcon size="lg" onClick={handleLogout} className="hover:scale-110 transition-transform"
-                                        bg={"bg"}>
+                            <ActionIcon size="lg" onClick={handleLogout} className="hover:scale-110 transition-transform">
                                 <IconLogout />
                             </ActionIcon>
                         )}
@@ -145,7 +130,6 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                         padding="md"
                         size="md"
                         className="lg:hidden"
-
                     >
                         <nav className="flex flex-col gap-4">
                             <ProductSearch />
@@ -164,7 +148,7 @@ export default function EcommerceHeader({ takeSpace = true }: PageHeaderProps) {
                         </nav>
                     </Drawer>
                 </div>
-            </header>
+            </Paper>
         </>
     );
 }

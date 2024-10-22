@@ -1,10 +1,12 @@
-import MainLayout from "../layouts/index-layout";
-import FsCarousel from "./index/_components/fs-carousel.component";
-import ProductShowcaseButtonGroup from "./index/_components/showcase-categories-buttongroup.component";
-import ProductRecommendedSection from "../components/product-recomended-section.component";
-import SvgPageBg from "../components/ui/svg-page-bg.component";
+import MainLayout from "../../layouts/index-layout";
+import FsCarousel from "./_components/fs-carousel.component";
+import ProductShowcaseButtonGroup from "./_components/showcase-categories-buttongroup.component";
+import ProductRecommendedSection from "../../components/product-recomended-section.component";
+import SvgPageBg from "../../components/common/svg-page-bg.component";
+import useDynamicTitle from "../../hooks/useDynamicTitle";
 
 export default function Page() {
+    useDynamicTitle(`Home`);
     return (
         <MainLayout takeSpace={false}>
             <FsCarousel/>

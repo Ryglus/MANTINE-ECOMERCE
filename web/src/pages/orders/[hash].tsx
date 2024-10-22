@@ -2,12 +2,12 @@ import {Card, Container, Divider, Grid, Group, Stack, Text, Timeline, Title} fro
 import {useEffect, useState} from 'react';
 import {MinifiedOrderData} from '../../lib/api/dto/order.dto';
 import {decodeOrderHash} from '../../utils/otherHasher';
-import ProductIncartCard from '../../components/_cards/product-incart.card';
+import ProductIncartCard from '../../components/cards/product-incart.card';
 import {useParams} from '../../router';
 import {fetchProductById} from '../../lib/api/product.api';
 import {Product} from '../../lib/api/dto/product.dto';
 import MainLayout from '../../layouts/index-layout';
-import SvgPageBg from '../../components/ui/svg-page-bg.component';
+import SvgPageBg from '../../components/common/svg-page-bg.component';
 import {IconCreditCard, IconHome, IconPackage, IconTruckDelivery, IconUser} from '@tabler/icons-react';
 
 export default function OrderPage() {

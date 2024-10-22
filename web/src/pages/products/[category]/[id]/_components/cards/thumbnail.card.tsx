@@ -1,5 +1,5 @@
 import {Box} from '@mantine/core';
-import ImgScaleWithBg from "../../../../../../components/ui/img-scale-with-bg.component";
+import ImgScaleWithBg from "../../../../../../components/common/img-scale-with-bg.component";
 import React from "react";
 
 interface ThumbnailCardProps {

@@ -11,7 +11,11 @@ interface PersonalInfoFormProps {
     form: UseFormReturnType<any>;
 }
 
-export default function PersonalInfoForm({ form }: PersonalInfoFormProps) {
+export default function PersonalInfoForm(
+    {
+        form
+    }: PersonalInfoFormProps) {
+
     const formatPhoneNumber = (value: string) =>
         value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3').trim();
     const countryCodes = countryCodesList.customList(CountryProperty.countryCode, '[+{countryCallingCode}] {countryNameEn}');

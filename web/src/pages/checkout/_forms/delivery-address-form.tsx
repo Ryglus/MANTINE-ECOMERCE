@@ -6,7 +6,11 @@ interface DeliveryAddressFormProps {
     form: UseFormReturnType<any>;
 }
 
-export default function DeliveryAddressForm({ form }: DeliveryAddressFormProps) {
+export default function DeliveryAddressForm(
+    {
+        form
+    }: DeliveryAddressFormProps) {
+
     const formatZipCode = (value: string) => value.replace(/\D/g, '').replace(/(\d{3})(\d{2})/, '$1 $2').trim();
 
     return (

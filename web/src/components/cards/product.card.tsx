@@ -1,8 +1,7 @@
-import {Badge, Button, Card, Center, Stack, Text} from "@mantine/core";
-import {Link} from "react-router-dom";
-import {buildProductUrl} from "../../utils/urlBuilder";
-import ImgScaleWithBg from "../ui/img-scale-with-bg.component";
 import React from "react";
+import {Badge, Button, Card, Center, Stack, Text} from "@mantine/core";
+import {Link} from "../../router";
+import ImgScaleWithBg from "../common/img-scale-with-bg.component";
 import {useCartStore} from "../../store/cart-store";
 import {Product} from "../../lib/api/dto/product.dto";
 import CartQuantity from "../cart-quantity.component";
@@ -12,9 +11,16 @@ interface ProductCardProps {
     size?: "sm" | "md" | "lg" | number;
 }
 
-const ProductCard = ({ product, size = "md" }: ProductCardProps) => {
+export default function ProductCard(
+    {
+        product,
+        size = "md"
+    }: ProductCardProps) {
+
     const addItem = useCartStore((state) => state.addItem);
-    const itemQuantity = useCartStore((state) => state.items.find((i) => i.id === product.id)?.quantity || 0);
+    const itemQuantity = useCartStore((state) =>
+        state.items.find((i) => i.id === product.id)?.quantity || 0
+    );
 
     const handleAddToCart = () => {
         if (product) {
@@ -43,9 +49,9 @@ const ProductCard = ({ product, size = "md" }: ProductCardProps) => {
             key={product.id}
             shadow="md"
             radius="md"
-            bg={"bg.9"}
+            bg="bg.9"
+            p="0"
             className="relative overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out hover:shadow-lg"
-            style={{ height: "100%", display: "flex", flexDirection: "column", padding: 0 }}
         >
             <div
                 className="relative flex items-center justify-center overflow-hidden rounded-md"
@@ -54,15 +60,20 @@ const ProductCard = ({ product, size = "md" }: ProductCardProps) => {
                 <Badge color="pink" variant="filled" className="absolute top-2 left-2">
                     {product.category}
                 </Badge>
-                <ImgScaleWithBg loading="lazy" img={product.image} alt={product.title} className="object-contain h-full w-full" />
+                <ImgScaleWithBg
+                    loading="lazy"
+                    img={product.image}
+                    alt={product.title}
+                    className="object-contain h-full w-full"
+                />
             </div>
 
-            <Center m={"xs"} style={{ flexGrow: 1 }}>
-                <Stack gap="xs" className={"w-full"}>
-                    <Text fw={500} className="text-lg text-center line-clamp-2" title={product.title}>
+            <Center m="xs" className="flex-grow" >
+                <Stack gap="xs" className="w-full">
+                    <Text fw={500} className="text-lg text-center line-clamp-2 min-h-14">
                         {product.title}
                     </Text>
-                    <Text fw={300} className="text-lg text-center" title={product.title}>
+                    <Text fw={300} className="text-lg text-center">
                         ${product.price}
                     </Text>
                 </Stack>
@@ -80,9 +91,7 @@ const ProductCard = ({ product, size = "md" }: ProductCardProps) => {
                 </Button>
             </div>
 
-            <Link to={buildProductUrl(product.category, product.id, product.title)} className="absolute inset-0 z-10" />
+            <Link to="/products/:category/:id/:slug?" params={{category:product.category,id:(product.id).toString()}} className="absolute inset-0 z-10" />
         </Card>
     );
-};
-
-export default ProductCard;
+}

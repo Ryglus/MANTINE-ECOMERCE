@@ -8,12 +8,3 @@ export function slugify(str: string): string {
 export function buildProductUrl(category: string, id: number, title: string): string {
     return `/products/${slugify(category)}/${id}/${slugify(title)}`;
 }
-
-export function extractProductIdFromSlug(slug: string): number | null {
-    const parts = slug.split('-');
-    const idPart = parts[0];
-
-    const id = parseInt(idPart, 10);
-
-    return isNaN(id) ? null : id;
-}

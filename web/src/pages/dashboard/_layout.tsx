@@ -2,7 +2,8 @@ import {Link, Outlet, useLocation} from 'react-router-dom';
 import {Burger, Button, Center, Drawer, Stack, Tooltip, UnstyledButton, useMantineTheme} from '@mantine/core';
 import {IconBox, IconDeviceDesktopAnalytics, IconHome2, IconLogout, IconSettings, IconUser} from '@tabler/icons-react';
 import {useState} from 'react';
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import SvgPageBg from "../../components/common/svg-page-bg.component";
+import useDynamicTitle from "../../hooks/useDynamicTitle";
 
 interface NavbarLinkProps {
     icon: typeof IconHome2;
@@ -31,7 +32,6 @@ export default function DashboardLayout() {
     const location = useLocation();
     const [opened, setOpened] = useState(false);
     const theme = useMantineTheme();
-
     const links = [
         { icon: IconHome2, label: 'Dashboard', to: '/dashboard' },
         { icon: IconDeviceDesktopAnalytics, label: 'Analytics', to: '/dashboard/analytics' },
@@ -39,7 +39,8 @@ export default function DashboardLayout() {
         { icon: IconUser, label: 'Account', to: '/dashboard/account' },
         { icon: IconSettings, label: 'Settings', to: '/dashboard/settings' },
     ];
-
+    const currentLink = links.find(link => link.to === location.pathname);
+    useDynamicTitle(`${currentLink ? currentLink.label : 'Dashboard'}`);
     return (
         <SvgPageBg>
             <div

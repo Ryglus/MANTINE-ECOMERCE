@@ -2,7 +2,7 @@ import {Product} from "../../../lib/api/dto/product.dto";
 import {Order} from "../../../lib/api/dto/order.dto";
 import {User} from "../../../lib/api/dto/account.dto";
 import {formatISO} from 'date-fns';
-import {filterDataByTimeframe, getProductPriceById} from './dashboard-date.utility';
+import {filterDataByTimeframe, getPreviousTimeframe, getProductPriceById} from './dashboard-date.utility';
 
 const processOrders = (
     orders: Order[],
@@ -15,7 +15,11 @@ const processOrders = (
     return calculation(filteredOrders, products, users);
 };
 
-export const calculateSalesData = (orders: Order[], products: Product[], timeframe: string): { date: string, Sales: number }[] => {
+export const calculateSalesData = (
+    orders: Order[],
+    products: Product[],
+    timeframe: string
+): { date: string, Sales: number }[] => {
     return processOrders(orders, products, [], timeframe, (filteredOrders) => {
         const salesByDate: Record<string, number> = filteredOrders.reduce((acc: Record<string, number>, order) => {
             const formattedDate = formatISO(new Date(order.date), { representation: 'date' });
@@ -50,7 +54,7 @@ export const calculateTotals = (
         }, 0);
 
         const ordersCount = filteredOrders.length;
-        const customersCount = users.length;
+        const customersCount = users.length;  // Assuming users[] contains all users
         const lowInventoryCount = products.filter(product => product.rating.count < 5).length;
 
         return {
@@ -60,6 +64,16 @@ export const calculateTotals = (
             lowInventoryCount,
         };
     });
+};
+
+export const calculatePreviousTotals = (
+    products: Product[],
+    orders: Order[],
+    users: User[],
+    timeframe: string
+) => {
+    const previousTimeframe = getPreviousTimeframe(timeframe);
+    return calculateTotals(products, orders, users, previousTimeframe);
 };
 
 export const calculateCategoryDistribution = (

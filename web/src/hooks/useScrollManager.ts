@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { useHeadroom } from '@mantine/hooks';
+import {useState} from 'react';
+import {useHeadroom} from '@mantine/hooks';
 
-export const useScrollManager = () => {
+export default function useScrollManager() {
     const [isScrolled, setIsScrolled] = useState(false);
 
     useHeadroom({
         fixedAt: 150,
         onFix: () => setIsScrolled(false),
-        onRelease: () => setIsScrolled(true)
+        onRelease: () => setIsScrolled(true),
     });
 
     return { isScrolled };
-};
+}

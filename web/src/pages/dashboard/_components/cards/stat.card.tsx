@@ -2,7 +2,7 @@ import React from 'react';
 import {Flex, Group, Text} from '@mantine/core';
 import {IconClock} from '@tabler/icons-react';
 import {getPreviousTimeframe, labelByTimeframe} from '../../_utils/dashboard-date.utility';
-import {DashBoardTile} from './card.template';
+import DashBoardTile from './card.template';
 import {CardActions} from '../card-actions.menu.component';
 
 interface StatCardProps {
@@ -16,16 +16,17 @@ interface StatCardProps {
     onSizeSelect: (size: { colSpan: number; rowSpan: number }) => void;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({
-                                                      title,
-                                                      value,
-                                                      prevValue,
-                                                      icon,
-                                                      timeframe,
-                                                      setTimeframe,
-                                                      gridSize,
-                                                      onSizeSelect,
-                                                  }) => {
+export default function StatCard(
+    {
+        title,
+        value,
+        prevValue,
+        icon,
+        timeframe,
+        setTimeframe,
+        gridSize,
+        onSizeSelect,
+    }: StatCardProps) {
     const percentageChange = prevValue !== 0
         ? (((value - prevValue) / prevValue) * 100).toFixed(2) + '%'
         : 'N/A';

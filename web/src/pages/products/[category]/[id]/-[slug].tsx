@@ -24,14 +24,16 @@ import MainLayout from "../../../../layouts/index-layout";
 import ProductDetailCarousel from "./_components/product-detail-carousel.component";
 import ProductDetailRecommended from "../../../../components/product-recomended-section.component";
 import {useCartStore} from "../../../../store/cart-store";
-import SvgPageBg from "../../../../components/ui/svg-page-bg.component";
+import SvgPageBg from "../../../../components/common/svg-page-bg.component";
 import CartQuantity from "../../../../components/cart-quantity.component";
 import QtyInput from "../../../../components/inputs/qty-input.component";
+import useDynamicTitle from "../../../../hooks/useDynamicTitle";
 
 export default function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { id, slug, category } = useParams('/products/:category/:id/:slug?');
     const { data: product, isLoading, error } = useFetchProductById(id);
+    useDynamicTitle(`${product?.title}`);
     const navigate = useNavigate();
     const addItem = useCartStore((state) => state.addItem);
     const itemQuantity = useCartStore((state) => state.items.find((i) => i.id === product?.id)?.quantity || 0);

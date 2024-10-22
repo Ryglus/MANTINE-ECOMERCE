@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React, {useMemo} from 'react';
 import {Center, Loader, Text} from '@mantine/core';
-import {StatCard} from './_components/_cards/stat.card';
-import {GraphCard} from './_components/_cards/graph.card';
-import {PieChartCard} from './_components/_cards/pie.card';
+import {GraphCard, PieChartCard, StatCard} from "./_components/cards";
 import {useOrderData} from '../../lib/api/order.api';
 import {IconUsers} from '@tabler/icons-react';
-import {calculateSalesData, calculateTotals} from './_utils/dashboard-data.utility';
-import {getPreviousTimeframe} from './_utils/dashboard-date.utility';
+import {calculatePreviousTotals, calculateSalesData, calculateTotals} from './_utils/dashboard-data.utility';
 import {DragDropContext, Draggable, Droppable, DropResult} from '@hello-pangea/dnd';
+import {useDashboardStore} from '../../store/dashboard-store';
+import {useMediaQuery} from '@mantine/hooks';
 
 const reorder = (list: string[], startIndex: number, endIndex: number): string[] => {
     const result = Array.from(list);
@@ -17,32 +16,27 @@ const reorder = (list: string[], startIndex: number, endIndex: number): string[]
 };
 
 export default function DashboardIndexPage() {
+
+    const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
     const { ordersQuery, usersQuery, productsQuery } = useOrderData();
+    const { tileOrder, gridSizes, timeframes, setTileOrder, setGridSize, setTimeframe } = useDashboardStore();
 
-    const [inventoryTimeframe, setInventoryTimeframe] = useState<string>('all_time');
-    const [ordersTimeframe, setOrdersTimeframe] = useState<string>('all_time');
-    const [salesTimeframe, setSalesTimeframe] = useState<string>('all_time');
-    const [customersTimeframe, setCustomersTimeframe] = useState<string>('all_time');
-    const [chartTimeframe, setChartTimeframe] = useState<string>('all_time');
-    const [categoryTimeframe, setCategoryTimeframe] = useState<string>('all_time');
+    const products = productsQuery.data || [];
+    const orders = ordersQuery.data || [];
+    const users = usersQuery.data || [];
 
-    const [gridSizes, setGridSizes] = useState<Record<string, { colSpan: number; rowSpan: number }>>({
-        lowInventory: { colSpan: 3, rowSpan: 1 },
-        orders: { colSpan: 3, rowSpan: 1 },
-        totalSales: { colSpan: 3, rowSpan: 1 },
-        customers: { colSpan: 3, rowSpan: 1 },
-        graph: { colSpan: 6, rowSpan: 2 },
-        categoryPie: { colSpan: 3, rowSpan: 2 },
-    });
+    const lowInventoryTotals = useMemo(() => calculateTotals(products, orders, users, timeframes.lowInventory), [products, orders, users, timeframes.lowInventory]);
+    const ordersTotals = useMemo(() => calculateTotals(products, orders, users, timeframes.orders), [products, orders, users, timeframes.orders]);
+    const salesTotals = useMemo(() => calculateTotals(products, orders, users, timeframes.totalSales), [products, orders, users, timeframes.totalSales]);
+    const customersTotals = useMemo(() => calculateTotals(products, orders, users, timeframes.customers), [products, orders, users, timeframes.customers]);
 
-    const [tileOrder, setTileOrder] = useState<string[]>([
-        'lowInventory',
-        'orders',
-        'totalSales',
-        'customers',
-        'graph',
-        'categoryPie',
-    ]);
+    const previousLowInventoryTotals = useMemo(() => calculatePreviousTotals(products, orders, users, timeframes.lowInventory), [products, orders, users, timeframes.lowInventory]);
+    const previousOrdersTotals = useMemo(() => calculatePreviousTotals(products, orders, users, timeframes.orders), [products, orders, users, timeframes.orders]);
+    const previousSalesTotals = useMemo(() => calculatePreviousTotals(products, orders, users, timeframes.totalSales), [products, orders, users, timeframes.totalSales]);
+    const previousCustomersTotals = useMemo(() => calculatePreviousTotals(products, orders, users, timeframes.customers), [products, orders, users, timeframes.customers]);
+
+    const salesData = useMemo(() => calculateSalesData(orders, products, timeframes.graph), [orders, products, timeframes.graph]);
 
     if (ordersQuery.isLoading || usersQuery.isLoading || productsQuery.isLoading) {
         return (
@@ -60,22 +54,6 @@ export default function DashboardIndexPage() {
         );
     }
 
-    const products = productsQuery.data || [];
-    const orders = ordersQuery.data || [];
-    const users = usersQuery.data || [];
-
-    const { totalSales } = calculateTotals(products, orders, users, salesTimeframe);
-    const { ordersCount } = calculateTotals(products, orders, users, ordersTimeframe);
-    const { customersCount } = calculateTotals(products, orders, users, customersTimeframe);
-    const { lowInventoryCount } = calculateTotals(products, orders, users, inventoryTimeframe);
-
-    const { totalSales: prevTotalSales } = calculateTotals(products, orders, users, getPreviousTimeframe(salesTimeframe));
-    const { ordersCount: prevOrdersCount } = calculateTotals(products, orders, users, getPreviousTimeframe(ordersTimeframe));
-    const { customersCount: prevCustomersCount } = calculateTotals(products, orders, users, getPreviousTimeframe(customersTimeframe));
-    const { lowInventoryCount: prevLowInventoryCount } = calculateTotals(products, orders, users, getPreviousTimeframe(inventoryTimeframe));
-
-    const salesData = calculateSalesData(orders, products, chartTimeframe);
-
     const onDragEnd = (result: DropResult) => {
         const { source, destination } = result;
         if (!destination) {
@@ -85,72 +63,68 @@ export default function DashboardIndexPage() {
         setTileOrder(reorderedTiles);
     };
 
-    const onSizeSelect = (tileId: string, newSize: { colSpan: number; rowSpan: number }) => {
-        setGridSizes((prev) => ({ ...prev, [tileId]: newSize }));
-    };
-
     const renderTiles = (tileId: string) => {
         switch (tileId) {
             case 'lowInventory':
                 return (
                     <StatCard
                         title="Low Inventory"
-                        value={lowInventoryCount.toString()}
-                        prevValue={prevLowInventoryCount}
+                        value={lowInventoryTotals.lowInventoryCount.toString()}
+                        prevValue={previousLowInventoryTotals.lowInventoryCount}
                         icon={<IconUsers size={24} />}
-                        timeframe={inventoryTimeframe}
-                        setTimeframe={setInventoryTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             case 'orders':
                 return (
                     <StatCard
                         title="Orders"
-                        value={ordersCount.toString()}
-                        prevValue={prevOrdersCount}
+                        value={ordersTotals.ordersCount.toString()}
+                        prevValue={previousOrdersTotals.ordersCount}
                         icon={<IconUsers size={24} />}
-                        timeframe={ordersTimeframe}
-                        setTimeframe={setOrdersTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             case 'totalSales':
                 return (
                     <StatCard
                         title="Total Sales"
-                        value={totalSales.toString()}
-                        prevValue={prevTotalSales}
+                        value={salesTotals.totalSales.toString()}
+                        prevValue={previousSalesTotals.totalSales}
                         icon={<IconUsers size={24} />}
-                        timeframe={salesTimeframe}
-                        setTimeframe={setSalesTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             case 'customers':
                 return (
                     <StatCard
                         title="Customers"
-                        value={customersCount.toString()}
-                        prevValue={prevCustomersCount}
+                        value={customersTotals.customersCount.toString()}
+                        prevValue={previousCustomersTotals.customersCount}
                         icon={<IconUsers size={24} />}
-                        timeframe={customersTimeframe}
-                        setTimeframe={setCustomersTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             case 'graph':
                 return (
                     <GraphCard
                         data={salesData}
-                        timeframe={chartTimeframe}
-                        setTimeframe={setChartTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             case 'categoryPie':
@@ -158,10 +132,10 @@ export default function DashboardIndexPage() {
                     <PieChartCard
                         orders={orders}
                         products={products}
-                        timeframe={categoryTimeframe}
-                        setTimeframe={setCategoryTimeframe}
+                        timeframe={timeframes[tileId]}
+                        setTimeframe={(newTimeframe) => setTimeframe(tileId, newTimeframe)}
                         gridSize={gridSizes[tileId]}
-                        onSizeSelect={(size) => onSizeSelect(tileId, size)}
+                        onSizeSelect={(size) => setGridSize(tileId, size)}
                     />
                 );
             default:
@@ -177,7 +151,7 @@ export default function DashboardIndexPage() {
                         style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(12, 1fr)',
-                            gridTemplateRows: 'repeat(auto-fill, 160px)',
+                            gridAutoRows: 'minmax(160px, auto)',
                             gap: '16px',
                         }}
                         {...provided.droppableProps}
@@ -191,7 +165,9 @@ export default function DashboardIndexPage() {
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                         style={{
-                                            gridColumn: `span ${gridSizes[tileId].colSpan}`,
+                                            gridColumn: isSmallScreen
+                                                ? 'span 12'
+                                                : `span ${gridSizes[tileId].colSpan}`,
                                             gridRow: `span ${gridSizes[tileId].rowSpan}`,
                                             ...provided.draggableProps.style,
                                         }}

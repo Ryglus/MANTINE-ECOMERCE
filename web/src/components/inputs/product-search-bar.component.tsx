@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Box, Input, Loader, Paper, Text} from '@mantine/core';
 import {IconSearch} from '@tabler/icons-react';
 import {useSearchProducts} from "../../lib/api/product.api";
-import ImgScaleWithBg from "../ui/img-scale-with-bg.component";
+import ImgScaleWithBg from "../common/img-scale-with-bg.component";
 import {buildProductUrl} from "../../utils/urlBuilder";
 import {Link} from "react-router-dom";
 
-
 export default function ProductSearch() {
+
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
@@ -24,7 +24,7 @@ export default function ProductSearch() {
     }, [searchTerm]);
 
     return (
-        <Box style={{ position: 'relative', width: '100%', maxWidth: 400 }}>
+        <Box className="relative w-full max-w-[400px]">
             <Input
                 placeholder="Search products..."
                 radius="md"
@@ -32,26 +32,17 @@ export default function ProductSearch() {
                 size="md"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.currentTarget.value)}
-                style={{ color: '#000', transition: 'background-color 0.3s' }}
+                className="transition-colors duration-300"
             />
 
             {searchTerm && (
                 <Paper
                     withBorder
-                    style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        maxHeight: '300px',
-                        overflowY: 'auto',
-                        zIndex: 10,
-                        marginTop: '5px',
-                    }}
+                    className="absolute top-full left-0 right-0 mt-1 max-h-[300px] overflow-y-auto z-10"
                 >
                     {isLoading && (
-                        <Box p="md">
-                            <Loader size="sm" />
+                        <Box p="md" className="text-center">
+                            <Loader size="md" />
                         </Box>
                     )}
 
@@ -65,26 +56,17 @@ export default function ProductSearch() {
                         <Box p="md">
                             {products.map((product) => (
                                 <Box
-                                    component={Link} to={buildProductUrl(product.category, product.id, product.title)}
+                                    component={Link}
+                                    to={buildProductUrl(product.category, product.id, product.title)}
                                     key={product.id}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '15px',
-                                        padding: '10px',
-                                        cursor: 'pointer',
-                                        transition: 'background-color 0.2s',
-                                        '&:hover': {
-                                            backgroundColor: '#f5f5f5',
-                                        },
-                                    }}
+                                    className="flex items-center gap-4 p-2 cursor-pointer transition-colors duration-200 hover:bg-gray-100"
                                 >
                                     <ImgScaleWithBg
                                         img={product.image}
                                         alt={product.title}
                                         className="relative h-[40px] aspect-square rounded-xl p-1"
                                     />
-                                    <Box >
+                                    <Box>
                                         <Text size="sm" fw={500}>
                                             {product.title}
                                         </Text>
@@ -94,9 +76,7 @@ export default function ProductSearch() {
                                         <Text size="sm" fw={600}>
                                             {product.price} USD
                                         </Text>
-
                                     </Box>
-
                                 </Box>
                             ))}
                         </Box>

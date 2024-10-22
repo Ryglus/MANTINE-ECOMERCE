@@ -3,7 +3,7 @@ import {Menu, SegmentedControl, Title} from '@mantine/core';
 import {BarChart, LineChart} from '@mantine/charts';
 import {IconChartBarPopular, IconCheck, IconTimeline} from '@tabler/icons-react';
 import {groupDataByTimeUnit} from '../../_utils/dashboard-date.utility';
-import {DashBoardTile} from './card.template';
+import DashBoardTile from './card.template';
 import {CardActions} from '../card-actions.menu.component';
 
 interface LineChartCardProps {
@@ -14,13 +14,15 @@ interface LineChartCardProps {
     onSizeSelect: (size: { colSpan: number; rowSpan: number }) => void;
 }
 
-export const GraphCard: React.FC<LineChartCardProps> = ({
-                                                            data,
-                                                            timeframe,
-                                                            setTimeframe,
-                                                            gridSize,
-                                                            onSizeSelect,
-                                                        }) => {
+export default function GraphCard(
+    {
+        data,
+        timeframe,
+        setTimeframe,
+        gridSize,
+        onSizeSelect,
+    }:LineChartCardProps) {
+
     const [grouping, setGrouping] = useState<string>('day');
     const [chartType, setChartType] = useState<string>('bar');
 

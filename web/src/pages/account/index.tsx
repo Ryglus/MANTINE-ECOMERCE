@@ -1,38 +1,20 @@
-import {Button, Group} from '@mantine/core';
-import {useNavigate} from 'react-router-dom';
-import {useAuthStore} from "../../store/auth-store";
-import useAuthRedirect from "../../hooks/useAuthRedirect";
-import AccountDetail from "./_components/account-detail.component";
-import MainLayout from "../../layouts/index-layout";
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import {useAuthStore} from '../../store/auth-store';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
+import AccountDetail from './_components/account-detail.component';
+import MainLayout from '../../layouts/index-layout';
+import SvgPageBg from '../../components/common/svg-page-bg.component';
+import useDynamicTitle from '../../hooks/useDynamicTitle';
 
-const AccountPage = () => {
+export default function AccountPage() {
     const token = useAuthStore((state) => state.token);
-    const clearAuth = useAuthStore((state) => state.clearAuth);
     useAuthRedirect({});
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        clearAuth();
-        navigate('/account/login');
-    };
+    useDynamicTitle('Account');
 
     return (
         <SvgPageBg>
             <MainLayout>
-                {token && (
-                    <div>
-                        <AccountDetail/>
-                        <Group mt="md">
-                            <Button color="red" onClick={handleLogout}>
-                                Logout
-                            </Button>
-                        </Group>
-                    </div>
-                )}
+                {token && <AccountDetail />}
             </MainLayout>
         </SvgPageBg>
     );
-};
-
-export default AccountPage;
+}

@@ -1,10 +1,14 @@
 import {useCartStore} from '../../../store/cart-store';
-import ProductIncartCard from "../../../components/_cards/product-incart.card";
+import ProductIncartCard from "../../../components/cards/product-incart.card";
 import {Card, Divider, Flex, Group, Stack, Text, Title} from '@mantine/core';
 import {DeliveryData, PaymentData, StepComponentProps} from '../../../lib/api/dto/checkout.dto';
 import {IconCreditCard, IconUser} from "@tabler/icons-react";
 
-export default function ReviewStep({ data }: StepComponentProps) {
+export default function ReviewStep(
+    {
+        data
+    }: StepComponentProps) {
+
     const { items } = useCartStore();
     const deliveryData = data?.delivery as DeliveryData | null;
     const paymentData = data?.payment as PaymentData | null;

@@ -29,7 +29,11 @@ const formatExpiryDate = (value: string) => {
     return `${cleanValue.slice(0, 2)}/${cleanValue.slice(2, 4)}`;
 };
 
-export default function PaymentOptionsForm({ form }: PaymentOptionsFormProps) {
+export default function PaymentOptionsForm(
+    {
+        form
+    }: PaymentOptionsFormProps) {
+
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
         form.values.selectedPaymentMethod || 'credit-card'
     );

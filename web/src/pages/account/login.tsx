@@ -1,13 +1,15 @@
-import {useForm} from "@mantine/form";
+import {useForm} from '@mantine/form';
 import {Box, Button, Container, Divider, Group, PasswordInput, Stack, Text, TextInput, Title} from '@mantine/core';
 import {useLogin} from '../../lib/api/auth.api';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
-import {Link} from "react-router-dom";
-import MainLayout from "../../layouts/index-layout";
-import SvgPageBg from "../../components/ui/svg-page-bg.component";
+import {Link} from 'react-router-dom';
+import MainLayout from '../../layouts/index-layout';
+import SvgPageBg from '../../components/common/svg-page-bg.component';
+import useDynamicTitle from '../../hooks/useDynamicTitle';
 
-const Login = () => {
+export default function Login() {
     useAuthRedirect({});
+    useDynamicTitle('Login');
 
     const form = useForm({
         initialValues: {
@@ -25,21 +27,17 @@ const Login = () => {
     return (
         <SvgPageBg>
             <MainLayout>
-                <Container size="lg" style={{ padding: '60px 0' }}>
+                <Container size="sm" py="xl">
                     <Box
-                        style={{
-                            maxWidth: 500,
-                            margin: '0 auto',
-                            padding: '40px',
-                            borderRadius: '10px',
-                        }}
+                        mx="auto"
+                        p="xl"
                     >
-                        <Title order={2} size={30} mb="lg" className={"text-center"}>
+                        <Title order={2} size={30} mb="lg" className="text-center">
                             Login
                         </Title>
 
                         <form onSubmit={form.onSubmit(handleSubmit)}>
-                            <Stack >
+                            <Stack>
                                 <TextInput
                                     label="Username"
                                     placeholder="Enter your username"
@@ -64,7 +62,7 @@ const Login = () => {
                                     radius="md"
                                     mt="lg"
                                     disabled={isPending}
-                                    styles={{ root: { height: 50 } }}
+
                                 >
                                     {isPending ? 'Logging in...' : 'Login'}
                                 </Button>
@@ -75,24 +73,18 @@ const Login = () => {
 
                         <Divider my="xl" />
 
-                        <Group  grow>
-                            <Button variant="outline" size="md" component={Link}
-                                    to={'/account/forgot-password'}>
+                        <Group grow>
+                            <Button variant="outline" size="md" component={Link} to="/account/forgot-password">
                                 Forgot Password?
                             </Button>
-                            <Button
-                                component={Link}
-                                to={'/account/register'}
-                                variant="outline"
-                                size="md"
-                            >
+                            <Button variant="outline" size="md" component={Link} to="/account/register">
                                 Create an Account
                             </Button>
                         </Group>
 
                         <Button
                             component={Link}
-                            to={'/dashboard'}
+                            to="/dashboard"
                             mt="xl"
                             fullWidth
                             size="md"
@@ -106,6 +98,4 @@ const Login = () => {
             </MainLayout>
         </SvgPageBg>
     );
-};
-
-export default Login;
+}
