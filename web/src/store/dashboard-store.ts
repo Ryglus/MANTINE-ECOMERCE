@@ -1,59 +1,167 @@
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 
-interface GridSize {
-    colSpan: number;
-    rowSpan: number;
+// Define the structure of your item in the store
+interface GridSettings {
+    w: number;
+    h: number;
+    x: number;
+    y: number;
+    min_w?: number;
+    max_w?: number;
+    min_h?: number;
+    max_h?: number;
 }
 
+export interface ItemProps {
+    id: string;
+    title?: string;
+    type: string;
+    timeFrame: string | 'all_time';
+    groupBy?: string | 'day';
+    gridSettings: GridSettings;
+}
+
+// Define the store structure
 interface DashboardStore {
-    tileOrder: string[];
-    gridSizes: Record<string, GridSize>;
-    timeframes: Record<string, string>;
-    setTileOrder: (newOrder: string[]) => void;
-    setGridSize: (tileId: string, newSize: GridSize) => void;
-    setTimeframe: (tileId: string, timeframe: string) => void;
+    items: ItemProps[];
+    setLayout: (layout: Array<{ id: string; gridSettings: Partial<GridSettings> }>) => void;
+    addItem: (item: ItemProps) => void;
+    setTimeFrame: (id: string, timeFrame: string) => void;
+    setGroupBy: (id: string, groupBy: string) => void;
 }
 
+// Initialize Zustand store
 export const useDashboardStore = create<DashboardStore>()(
     persist(
         (set) => ({
-            tileOrder: [
-                'lowInventory',
-                'orders',
-                'totalSales',
-                'customers',
-                'graph',
-                'categoryPie',
+            items: [
+                {
+                    id: "1",
+                    title:"low invy",
+                    type: 'lowInventory',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 3,
+                        h: 2,
+                        x: 0,
+                        y: 0,
+                        min_w: 2,
+                        min_h: 2,
+                    },
+                },
+                {
+                    id: "2",
+                    title:"low invy",
+                    type: 'lowInventory',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 3,
+                        h: 2,
+                        x: 3,
+                        y: 0,
+                        min_w: 2,
+                        min_h: 2,
+                    },
+                },
+                {
+                    id: "3",
+                    title:"low invy",
+                    type: 'lowInventory',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 3,
+                        h: 2,
+                        x: 6,
+                        y: 0,
+                        min_w: 2,
+                        min_h: 2,
+                    },
+                },
+                {
+                    id: "4",
+                    title:"low invy",
+                    type: 'lowInventory',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 3,
+                        h: 2,
+                        x: 0,
+                        y: 2,
+                        min_w: 2,
+                        min_h: 2,
+                    },
+                },
+                {
+                    id: "5",
+                    title:"category pie",
+                    type: 'categoryPie',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 3,
+                        h: 4,
+                        x: 9,
+                        y: 0,
+                        min_w: 2,
+                        min_h: 3,
+                    },
+                },
+                {
+                    id: "6",
+                    title:"graph",
+                    type: 'graph',
+                    timeFrame: 'all_time',
+                    gridSettings: {
+                        w: 6,
+                        h: 4,
+                        x: 3,
+                        y: 2,
+                        min_w: 2,
+                        min_h: 3,
+                    },
+                }
             ],
-            gridSizes: {
-                lowInventory: { colSpan: 3, rowSpan: 1 },
-                orders: { colSpan: 3, rowSpan: 1 },
-                totalSales: { colSpan: 3, rowSpan: 1 },
-                customers: { colSpan: 3, rowSpan: 1 },
-                graph: { colSpan: 6, rowSpan: 2 },
-                categoryPie: { colSpan: 3, rowSpan: 2 },
-            },
-            timeframes: {
-                lowInventory: 'all_time',
-                orders: 'all_time',
-                totalSales: 'all_time',
-                customers: 'all_time',
-                graph: 'all_time',
-                categoryPie: 'all_time',
-            },
-            setTileOrder: (newOrder) => set({ tileOrder: newOrder }),
-            setGridSize: (tileId, newSize) =>
+            setLayout: (layout) =>
                 set((state) => ({
-                    gridSizes: { ...state.gridSizes, [tileId]: newSize },
+                    items: state.items.map((item) => {
+                        const layoutItem = layout.find((l) => l.id === item.id);
+                        return layoutItem
+                            ? {
+                                ...item,
+                                gridSettings: { ...item.gridSettings, ...layoutItem.gridSettings },
+                            }
+                            : item;
+                    }),
                 })),
-            setTimeframe: (tileId, timeframe) =>
+            addItem: (item) =>
                 set((state) => ({
-                    timeframes: { ...state.timeframes, [tileId]: timeframe },
+                    items: [...state.items, item],
+                })),
+            setTimeFrame: (id: string, timeFrame: string) =>
+                set((state) => ({
+                    items: state.items.map((item) =>
+                        item.id === id
+                            ? {
+                                ...item,
+                                timeFrame,
+                            }
+                            : item
+                    ),
+                })),
+            setGroupBy: (id: string, groupBy: string) =>
+                set((state) => ({
+                    items: state.items.map((item) =>
+                        item.id === id
+                            ? {
+                                ...item,
+                                groupBy,
+                            }
+                            : item
+                    ),
                 })),
         }),
         {
-            name: 'velvet-cove/dashboard',
+            name: "velvet-cove/dashboard",
         }
     )
 );

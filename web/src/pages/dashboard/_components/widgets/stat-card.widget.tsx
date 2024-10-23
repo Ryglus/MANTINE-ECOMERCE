@@ -2,8 +2,6 @@ import React from 'react';
 import {Flex, Group, Text} from '@mantine/core';
 import {IconClock} from '@tabler/icons-react';
 import {getPreviousTimeframe, labelByTimeframe} from '../../_utils/dashboard-date.utility';
-import DashBoardTile from './card.template';
-import {CardActions} from '../card-actions.menu.component';
 
 interface StatCardProps {
     title: string;
@@ -11,21 +9,13 @@ interface StatCardProps {
     prevValue: number;
     icon: React.ReactNode;
     timeframe: string;
-    setTimeframe: (value: string) => void;
-    gridSize: { colSpan: number; rowSpan: number };
-    onSizeSelect: (size: { colSpan: number; rowSpan: number }) => void;
 }
 
-export default function StatCard(
+export default function StatWidget(
     {
-        title,
         value,
         prevValue,
-        icon,
         timeframe,
-        setTimeframe,
-        gridSize,
-        onSizeSelect,
     }: StatCardProps) {
     const percentageChange = prevValue !== 0
         ? (((value - prevValue) / prevValue) * 100).toFixed(2) + '%'
@@ -34,23 +24,8 @@ export default function StatCard(
     const isPositive = value > prevValue;
     const isNeutral = value === prevValue;
 
-    const handleSizeChange = (newSize: number) => {
-        const rowSpan = newSize > 6 ? 2 : 1;
-        onSizeSelect({ colSpan: newSize, rowSpan });
-    };
-
     return (
-        <DashBoardTile
-            title={<Flex gap={'xs'}>{icon} {title}</Flex>}
-            actions={
-                <CardActions
-                    timeframe={timeframe}
-                    onSelect={setTimeframe}
-                    gridSize={gridSize.colSpan}
-                    onSizeSelect={handleSizeChange}
-                />
-            }
-        >
+        <>
             <Text size="xl" fw={700} mt="md">{value}</Text>
             <Flex justify="space-between" mt="md">
                 <Group gap="xs">
@@ -67,6 +42,6 @@ export default function StatCard(
                     {labelByTimeframe(timeframe)}
                 </Group>
             </Flex>
-        </DashBoardTile>
+        </>
     );
 };

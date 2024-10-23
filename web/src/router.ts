@@ -11,7 +11,6 @@ export type Path =
   | `/cart`
   | `/checkout/:step?`
   | `/dashboard`
-  | `/dashboard/:section?`
   | `/dashboard/analytics`
   | `/dashboard/products`
   | `/orders/:id`
@@ -20,7 +19,6 @@ export type Path =
 
 export type Params = {
   '/checkout/:step?': { step?: string }
-  '/dashboard/:section?': { section?: string }
   '/orders/:id': { id: string }
   '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
   '/products/:category?': { category?: string }
