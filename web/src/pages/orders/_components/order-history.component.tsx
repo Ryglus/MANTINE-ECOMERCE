@@ -37,7 +37,7 @@ export default function OrderHistory() {
                                     Date: {new Date(order.date).toLocaleDateString()}
                                 </Text>
                             </div>
-                            <Button component={Link} to={`/orders/${order.id}`} variant="light" color="blue" radius="md">
+                            <Button component={Link} to={`/orders/${order.id}`} variant="light" radius="md">
                                 View Order
                             </Button>
                         </Flex>
