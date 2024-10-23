@@ -3,8 +3,10 @@ import {useGetUserInfo} from '../../../lib/api/user.api';
 import {useAuthStore} from '../../../store/auth-store';
 import {useEffect} from 'react';
 import MainLayout from '../../../layouts/index-layout';
-import {IconUserEdit} from '@tabler/icons-react';
+import {IconLogout, IconUserEdit} from '@tabler/icons-react';
 import {Link, useNavigate} from 'react-router-dom';
+import OrderHistory from "../../orders/_components/order-history.component";
+
 
 export default function AccountDetail() {
     const { mutate, isPending, isError } = useGetUserInfo();
@@ -44,10 +46,26 @@ export default function AccountDetail() {
     }
 
     return (
-        <Container size="sm" my="lg">
+        <Container size="sm">
             <Container p="xl" className="relative">
-                <Flex justify="end">
-                    <Button onClick={handleLogout}>
+                <Button
+                    component={Link}
+                    to="/dashboard"
+                    mb="lg"
+                    fullWidth
+                    size="md"
+                    color="gray"
+                    radius="md"
+                >
+                    Go to Admin
+                </Button>
+                <Flex justify="space-between">
+                    <Button
+                        leftSection={<IconUserEdit />}
+                    >
+                        Edit Account
+                    </Button>
+                    <Button onClick={handleLogout} rightSection={<IconLogout />}>
                         Logout
                     </Button>
                 </Flex>
@@ -80,27 +98,11 @@ export default function AccountDetail() {
                         <strong>Address:</strong> {user?.address?.street}, {user?.address?.city}
                     </Text>
                 </Stack>
+                <Divider my="lg" />
 
-                <Button
-                    fullWidth
-                    mt="xl"
-                    size="lg"
-                    radius="md"
-                    leftSection={<IconUserEdit size={20} />}
-                >
-                    Edit Account
-                </Button>
-                <Button
-                    component={Link}
-                    to="/dashboard"
-                    mt="xl"
-                    fullWidth
-                    size="md"
-                    color="gray"
-                    radius="md"
-                >
-                    Go to Admin
-                </Button>
+                <Box mt="xl">
+                    <OrderHistory />
+                </Box>
             </Container>
         </Container>
     );

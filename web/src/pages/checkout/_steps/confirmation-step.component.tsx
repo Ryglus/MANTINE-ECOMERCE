@@ -1,39 +1,33 @@
 import {Text} from '@mantine/core';
 import {StepComponentProps} from "../../../lib/api/dto/checkout.dto";
 import {useCartStore} from "../../../store/cart-store";
+import {useOrderStore} from "../../../store/order-store";
+import {useNavigate} from '../../../router';
 import {useEffect} from "react";
-import {useNavigate} from 'react-router-dom';
-import {generateOrderHash} from "../../../utils/otherHasher";
-import {MinifiedOrderData} from "../../../lib/api/dto/order.dto";
 
-export default function ConfirmationStep(
-    {
-        data
-    }: StepComponentProps) {
-
+export default function ConfirmationStep({ data }: StepComponentProps) {
     const { items, clearCart } = useCartStore();
+    const { addOrder } = useOrderStore();
     const navigate = useNavigate();
+    const orderId = (Math.random() * 10000).toString().replaceAll(".", "");
 
     useEffect(() => {
         if (data?.delivery && data?.payment && items.length > 0) {
-            const minifiedOrder: MinifiedOrderData = {
+            addOrder({
+                id: orderId,
+                userId: 0,
+                date: new Date().toISOString(),
+                products: items.map(item => ({ product: item, quantity: item.quantity })),
                 delivery: data.delivery,
-                payment: {
-                    paymentMethod: data.payment.selectedPaymentMethod,
-                    status:"Pending",
-                    cardholderName: data.payment.cardholderName,
-                },
-                items: items.map(item => ({ id: item.id, quantity: item.quantity })),
-            };
-            const orderHash = generateOrderHash(minifiedOrder);
-            navigate(`/orders/${orderHash}`);
-            clearCart();
-        }
-    }, [data, items, navigate, clearCart]);
+                payment: data.payment,
+                status: "Pending",
+            });
 
-    return (
-        <div>
-            <Text>Thank you for your order! You are being redirected to your order summary...</Text>
-        </div>
-    );
+            clearCart();
+
+            navigate("/orders/:id",{params:{id:(orderId).toString()}, replace: true });
+        }
+    }, [data, items, addOrder, clearCart, navigate, orderId]);
+
+    return <Text>Thank you for your order! You are being redirected to your order summary...</Text>;
 }

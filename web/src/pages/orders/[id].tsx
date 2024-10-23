@@ -1,66 +1,22 @@
-import {Card, Container, Divider, Grid, Group, Stack, Text, Timeline, Title} from '@mantine/core';
-import {useEffect, useState} from 'react';
-import {MinifiedOrderData} from '../../lib/api/dto/order.dto';
-import {decodeOrderHash} from '../../utils/otherHasher';
-import ProductIncartCard from '../../components/cards/product-incart.card';
+import React from 'react';
 import {useParams} from '../../router';
-import {fetchProductById} from '../../lib/api/product.api';
-import {Product} from '../../lib/api/dto/product.dto';
-import MainLayout from '../../layouts/index-layout';
-import SvgPageBg from '../../components/common/svg-page-bg.component';
-import {IconCreditCard, IconHome, IconPackage, IconTruckDelivery, IconUser} from '@tabler/icons-react';
+import {useOrderStore} from '../../store/order-store';
+import {Card, Container, Divider, Grid, Group, Stack, Text, Timeline, Title} from '@mantine/core';
+import MainLayout from "../../layouts/index-layout";
+import SvgPageBg from "../../components/common/svg-page-bg.component";
+import {IconCreditCard, IconHome, IconPackage, IconTruckDelivery, IconUser} from "@tabler/icons-react";
+import ProductIncartCard from "../../components/cards/product-incart.card";
 
 export default function OrderPage() {
-    const { hash } = useParams('/orders/:hash');
-    const [orderData, setOrderData] = useState<MinifiedOrderData | null>(null);
-    const [products, setProducts] = useState<{ id: number; data: Product }[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { id } = useParams('/orders/:id');
+    const order = useOrderStore((state) => state.getOrderById(id));
 
-    useEffect(() => {
-        if (hash) {
-            try {
-                const decodedData = decodeOrderHash(hash);
-                setOrderData(decodedData);
-
-                const fetchProducts = async () => {
-                    const productPromises = decodedData.items.map((item) =>
-                        fetchProductById(String(item.id)).then((product) => ({
-                            id: item.id,
-                            data: product,
-                        }))
-                    );
-
-                    const fetchedProducts = await Promise.all(productPromises);
-                    setProducts(fetchedProducts);
-                    setLoading(false);
-                };
-
-                fetchProducts();
-            } catch (error) {
-                console.error('Invalid or corrupted order hash:', error);
-                setOrderData(null);
-            }
-        }
-    }, [hash]);
-
-    if (!orderData) {
+    if (!order) {
         return (
             <MainLayout>
                 <Container size="md" pt="xl">
                     <Text c="red" size="lg">
-                        Invalid order information or corrupted URL.
-                    </Text>
-                </Container>
-            </MainLayout>
-        );
-    }
-
-    if (loading) {
-        return (
-            <MainLayout>
-                <Container size="md" pt="xl">
-                    <Text size="lg">
-                        Loading products...
+                        Order Not Found
                     </Text>
                 </Container>
             </MainLayout>
@@ -85,18 +41,18 @@ export default function OrderPage() {
                                 <Divider mb="md" />
                                 <Stack gap="xs">
                                     <Text>
-                                        <strong>Name:</strong> {orderData.delivery.firstname}{' '}
-                                        {orderData.delivery.lastname}
+                                        <strong>Name:</strong> {order.delivery.firstname}{' '}
+                                        {order.delivery.lastname}
                                     </Text>
                                     <Text>
-                                        <strong>Address:</strong> {orderData.delivery.street}{' '}
-                                        {orderData.delivery.number}
+                                        <strong>Address:</strong> {order.delivery.street}{' '}
+                                        {order.delivery.number}
                                     </Text>
                                     <Text>
-                                        <strong>City:</strong> {orderData.delivery.city}, {orderData.delivery.zipcode}
+                                        <strong>City:</strong> {order.delivery.city}, {order.delivery.zipcode}
                                     </Text>
                                     <Text>
-                                        <strong>Phone:</strong> {orderData.delivery.phone}
+                                        <strong>Phone:</strong> {order.delivery.phone}
                                     </Text>
                                 </Stack>
                             </Card>
@@ -109,7 +65,7 @@ export default function OrderPage() {
                                 </Group>
                                 <Divider mb="md" />
                                 <Stack gap="xs">
-                                    {Object.entries(orderData.payment).map(([key, value]) => (
+                                    {Object.entries(order.payment).map(([key, value]: [string, any]) => (
                                         value && (
                                             <Text key={key}>
                                                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
@@ -133,13 +89,14 @@ export default function OrderPage() {
                     <Title order={4} mt="xl" mb="md">
                         Products
                     </Title>
-                    {products.length > 0 ? (
+
+                    {order.products.length > 0 ? (
                         <Stack gap="md">
-                            {products.map((product) => (
+                            {order.products.map((product) => (
                                 <ProductIncartCard
-                                    key={product.id}
-                                    product={product.data}
-                                    quantity={orderData.items.find((item) => item.id === product.id)?.quantity || 1}
+                                    key={product.product.id}
+                                    product={product.product}
+                                    quantity={product.quantity}
                                     isEditable={false}
                                 />
                             ))}
@@ -181,7 +138,7 @@ function ShippingStatus({ status }: { status: string }) {
             >
                 <Stack gap={0} className={"h-full"} justify="center">
                     <Title size={"md"} mt={index >= 1 ? 4 : 0}>{step.label}</Title>
-                        {step.status === 'order_placed' && <Text>{new Date().toLocaleDateString()}</Text>}
+                    {step.status === 'order_placed' && <Text>{new Date().toLocaleDateString()}</Text>}
                 </Stack>
 
             </Timeline.Item>

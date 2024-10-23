@@ -14,14 +14,14 @@ export type Path =
   | `/dashboard/:section?`
   | `/dashboard/analytics`
   | `/dashboard/products`
-  | `/orders/:hash`
+  | `/orders/:id`
   | `/products/:category/:id/:slug?`
   | `/products/:category?`
 
 export type Params = {
   '/checkout/:step?': { step?: string }
   '/dashboard/:section?': { section?: string }
-  '/orders/:hash': { hash: string }
+  '/orders/:id': { id: string }
   '/products/:category/:id/:slug?': { category: string; id: string; slug?: string }
   '/products/:category?': { category?: string }
 }
