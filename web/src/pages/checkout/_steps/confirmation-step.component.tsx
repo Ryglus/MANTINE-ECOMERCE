@@ -11,6 +11,8 @@ export default function ConfirmationStep({ data }: StepComponentProps) {
     const navigate = useNavigate();
     const orderId = (Math.random() * 10000).toString().replaceAll(".", "");
 
+    const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
     useEffect(() => {
         if (data?.delivery && data?.payment && items.length > 0) {
             addOrder({
@@ -19,7 +21,12 @@ export default function ConfirmationStep({ data }: StepComponentProps) {
                 date: new Date().toISOString(),
                 products: items.map(item => ({ product: item, quantity: item.quantity })),
                 delivery: data.delivery,
-                payment: data.payment,
+                payment: {
+                    ...data.payment,
+                    totalPrice: (totalPrice + Number(data?.delivery?.shippingOption?.option?.price)),
+                    itemPrice: totalPrice,
+                    shippingPrice: data.delivery.shippingOption?.option.price
+                },
                 status: "Pending",
             });
 
@@ -27,7 +34,7 @@ export default function ConfirmationStep({ data }: StepComponentProps) {
 
             navigate("/orders/:id",{params:{id:(orderId).toString()}, replace: true });
         }
-    }, [data, items, addOrder, clearCart, navigate, orderId]);
+    }, [data, items, addOrder, clearCart, navigate, orderId, totalPrice]);
 
     return <Text>Thank you for your order! You are being redirected to your order summary...</Text>;
 }

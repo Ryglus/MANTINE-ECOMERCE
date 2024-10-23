@@ -42,9 +42,14 @@ export default function OrderHistory() {
                             </Button>
                         </Flex>
                         <Divider my="sm" />
-                        <Text size="sm" c="dimmed">
-                            {order.products.length} products in this order
-                        </Text>
+                        <Flex justify="space-between">
+                            <Text size="sm" c="dimmed">
+                                {order.products.length} products in this order
+                            </Text>
+                            <Text>
+                                ${order.payment.totalPrice.toFixed(2)}
+                            </Text>
+                        </Flex>
                     </Card>
                 ))}
             </Stack>
