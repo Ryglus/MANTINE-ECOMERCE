@@ -1,44 +1,18 @@
-# MANTINE-ECOMERCE
-## fake-eshop
+<div align="center">
+  <div>
+    <img src="web/public/logo2edit.webp" alt="LiftLog Logo" width="100">
+    <h1 style="display: inline; text-align: center;">VELVETCOVE</h1>
+  </div>
+</div>
 
-### PAGES
-- mainpage +-
-- products/categories +-
-- product detail +-
-- shopping cart +-
-- checkout +-
-- account page +-
+# Tech Stack
+This project utilizes the following technologies:
 
-### TECH STACK
+- Vite – Fast and modern build tool for blazing development speed.
+- FakeStoreAPI – A free, ready-to-use REST API to fetch fake products for e-commerce.
+- Mantine – A modern React component library with focus on usability and performance.
+- Generouted – Type-safe routing for React.
+- Zustand – Lightweight state management for managing global state efficiently.
+- Tailwind CSS – Utility-first CSS framework for rapid UI development.
+- Project Structure
 
-- [Vite](https://vitejs.dev/)
-- [API](https://fakestoreapi.com/)
-- [Mantine](https://mantine.dev/)
-- [generouted](https://github.com/oedotme/generouted)
-- [Zusand](https://github.com/pmndrs/zustand)
-- [Tailwind](https://tailwindcss.com)
-
-## API
-https://github.com/keikaavousi/fake-store-api
-
-## PROJECT STRUCTURE
-
-- /public
-  - favicon
-  - logo
-
-- /src
-  - /components - reusable UI components
-  - /layouts
-  - /hooks
-  - /lib
-  - /pages
-
-
-### notes
-- fix products
-- create products/category page
-- footer?
-- colors
-- improove cart/checkout
-- search bar

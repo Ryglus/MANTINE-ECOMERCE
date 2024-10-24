@@ -22,20 +22,16 @@ export default function StatWidget(
         : 'N/A';
 
     const isPositive = value > prevValue;
-    const isNeutral = value === prevValue;
+    const isNeutral = value == prevValue;
 
     return (
         <>
             <Text size="xl" fw={700} mt="md">{value}</Text>
             <Flex justify="space-between" mt="md">
                 <Group gap="xs">
-                    {isNeutral ? (
-                        <Text>Comparing to historical data</Text>
-                    ) : (
-                        <Text c={isNeutral ? 'gray' : isPositive ? 'green' : 'red'}>
-                            {percentageChange} from {labelByTimeframe(getPreviousTimeframe(timeframe))}
-                        </Text>
-                    )}
+                    <Text c={isNeutral ? 'gray' : isPositive ? 'green' : 'red'}>
+                        {isNeutral ? percentageChange : "-"} from {labelByTimeframe(getPreviousTimeframe(timeframe))}
+                    </Text>
                 </Group>
                 <Group gap="xs">
                     <IconClock size={14} />

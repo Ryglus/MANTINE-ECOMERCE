@@ -2,6 +2,7 @@ import {createRef, RefObject, useEffect, useRef} from "react";
 import {GridStack, GridStackNode} from "gridstack";
 import {ItemProps, useDashboardStore} from "../../../store/dashboard-store";
 import WidgetCard from "./widget.card.component";
+import {useMediaQuery} from "@mantine/hooks";
 
 interface ControlledStackProps {
     items: ItemProps[];
@@ -11,6 +12,9 @@ export default function ControlledStack({ items }: ControlledStackProps) {
     const refs = useRef<{ [key: string]: RefObject<HTMLDivElement> }>({});
     const gridRef = useRef<GridStack | null>(null);
     const setLayout = useDashboardStore((state) => state.setLayout);
+    const isSmallScreen = useMediaQuery('(max-width: 40em)', true, {
+        getInitialValueInEffect: false,
+    })
 
     if (Object.keys(refs.current).length !== items.length) {
         items.forEach(({ id }) => {
@@ -39,7 +43,8 @@ export default function ControlledStack({ items }: ControlledStackProps) {
         grid.commit();
 
         grid.on("change", (event, changedItems: GridStackNode[]) => {
-            const newLayout = changedItems.map((item) => ({
+
+            setLayout(changedItems.map((item) => ({
                 id: item.el?.getAttribute("id") || "",
                 gridSettings: {
                     x: item.x || 0,
@@ -47,14 +52,33 @@ export default function ControlledStack({ items }: ControlledStackProps) {
                     w: item.w || 1,
                     h: item.h || 1,
                 },
-            }));
-            setLayout(newLayout);
+            })));
         });
 
         return () => {
             grid.off("change");
         };
     }, [items, setLayout]);
+
+    useEffect(() => {
+        const grid = gridRef.current;
+        if (grid) {
+            grid.batchUpdate();
+            items.forEach((item) => {
+                const element = refs.current[item.id]?.current;
+                if (element) {
+                    const node = grid.engine.nodes.find((n) => n.el === element);
+                    if (node) {
+                        node.w = item.gridSettings.w;
+                        node.x = item.gridSettings.x;
+                        node.y = item.gridSettings.y;
+                        grid.update(element, node);
+                    }
+                }
+            });
+            grid.commit();
+        }
+    }, [isSmallScreen, items]);
 
     return (
         <>

@@ -70,7 +70,7 @@ export default function DashboardLayout() {
                 </Stack>
             </Drawer>
 
-            <div className="flex h-screen overflow-hidden">
+            <div className="flex h-svh overflow-hidden">
                 <nav
                     className="hidden md:flex border-r flex-col justify-between text-white p-2"
                     style={{ backgroundColor: theme.colors.bg[9] }}

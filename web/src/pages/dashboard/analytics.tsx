@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActionIcon, Box, Button, Flex, Group, Stack, Text, TextInput} from '@mantine/core';
+import {ActionIcon, Box, Button, Flex, Stack, Text} from '@mantine/core';
 import {DatePicker, type DatesRangeValue} from '@mantine/dates';
 // @ts-ignore
 import sortBy from 'lodash/sortBy';
@@ -7,7 +7,7 @@ import {showNotification} from '@mantine/notifications';
 import {IconChevronUp, IconSelector, IconTrash} from '@tabler/icons-react';
 import {useOrderData} from '../../lib/api/order.api';
 import {DataTable, DataTableSortStatus} from 'mantine-datatable';
-import {NumberParam, StringParam, useQueryParams, withDefault} from 'use-query-params';
+import {DateParam, NumberParam, StringParam, useQueryParams, withDefault} from 'use-query-params';
 import {Order} from '../../lib/api/dto/order.dto';
 import {Product} from '../../lib/api/dto/product.dto';
 import {User} from "../../lib/api/dto/account.dto";
@@ -22,18 +22,21 @@ export default function DashboardOrdersPage() {
         page: withDefault(NumberParam, 1),
         orderId: NumberParam,
         user: StringParam,
-        date: StringParam,
+        fromDate: DateParam,
+        toDate: DateParam,
+        sC: withDefault(StringParam, 'id'),
+        sD: withDefault(StringParam, 'asc'),
     });
 
-    const { page, orderId, user } = queryParams;
+    const { page, orderId, user, fromDate, toDate, sC, sD } = queryParams;
 
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Order>>({
-        columnAccessor: 'id',
-        direction: 'asc',
+        columnAccessor: sC || 'id',
+        direction: sD as 'asc' | 'desc',
     });
 
     const [sortedOrders, setSortedOrders] = useState<Order[]>([]);
-    const [dateRange, setDateRange] = useState<DatesRangeValue>();
+    const [dateRange, setDateRange] = useState<DatesRangeValue>(fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : [null, null]);
 
     useEffect(() => {
         if (ordersQuery.isSuccess) {
@@ -50,10 +53,37 @@ export default function DashboardOrdersPage() {
                 return matchesOrderId && matchesUser && matchesDateRange;
             });
 
-            const sortedData = sortBy(filteredOrders, sortStatus.columnAccessor);
+            let sortedData;
+            if (sortStatus.columnAccessor === 'date') {
+                sortedData = sortBy(filteredOrders, (order: { date: string | number | Date; }) => new Date(order.date));
+            } else {
+                sortedData = sortBy(filteredOrders, sortStatus.columnAccessor);
+            }
+
             setSortedOrders(sortStatus.direction === 'desc' ? sortedData.reverse() : sortedData);
         }
     }, [ordersQuery.data, orderId, user, dateRange, sortStatus]);
+
+    useEffect(() => {
+        setQueryParams({
+            sC: sortStatus.columnAccessor,
+            sD: sortStatus.direction,
+        });
+    }, [sortStatus]);
+
+    useEffect(() => {
+        if (dateRange && dateRange[0] && dateRange[1]) {
+            setQueryParams({
+                fromDate: dayjs(dateRange[0]).toDate(),
+                toDate: dayjs(dateRange[1]).toDate(),
+            });
+        } else {
+            setQueryParams({
+                fromDate: undefined,
+                toDate: undefined,
+            });
+        }
+    }, [dateRange]);
 
     if (ordersQuery.isLoading || usersQuery.isLoading || productsQuery.isLoading) {
         return <div>Loading...</div>;
@@ -85,27 +115,8 @@ export default function DashboardOrdersPage() {
         });
     };
 
-    const handleFilterChange = (filterName: string, value: string | number | null) => {
-        setQueryParams({ [filterName]: value, page: 1 });
-    };
-
     return (
         <div>
-            <Group mb="md" gap="md">
-                <TextInput
-                    label="Order ID"
-                    value={orderId?.toString() || ''}
-                    onChange={(e) => handleFilterChange('orderId', e.currentTarget.value ? parseInt(e.currentTarget.value) : null)}
-                    placeholder="Filter by Order ID"
-                />
-                <TextInput
-                    label="User"
-                    value={user || ''}
-                    onChange={(e) => handleFilterChange('user', e.currentTarget.value)}
-                    placeholder="Filter by User"
-                />
-            </Group>
-
             <DataTable<Order>
                 withTableBorder
                 borderRadius="sm"
@@ -150,7 +161,7 @@ export default function DashboardOrdersPage() {
                                     disabled={!dateRange}
                                     variant="light"
                                     onClick={() => {
-                                        setDateRange(undefined);
+                                        setDateRange([null, null]);
                                         close();
                                     }}
                                 >
@@ -175,9 +186,9 @@ export default function DashboardOrdersPage() {
                     },
                     {
                         accessor: 'actions',
-                        title: 'Actions',
+                        title: '',
                         render: (order: Order) => (
-                            <Flex gap="xs">
+                            <Flex>
                                 <ActionIcon size="sm" color="red" onClick={() => handleOrderDelete(order.id)}>
                                     <IconTrash />
                                 </ActionIcon>

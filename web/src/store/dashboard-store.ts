@@ -1,7 +1,6 @@
 import {create} from "zustand";
 import {persist} from "zustand/middleware";
 
-// Define the structure of your item in the store
 interface GridSettings {
     w: number;
     h: number;
@@ -11,6 +10,7 @@ interface GridSettings {
     max_w?: number;
     min_h?: number;
     max_h?: number;
+    prev?: GridSettings;
 }
 
 export interface ItemProps {
@@ -22,7 +22,6 @@ export interface ItemProps {
     gridSettings: GridSettings;
 }
 
-// Define the store structure
 interface DashboardStore {
     items: ItemProps[];
     setLayout: (layout: Array<{ id: string; gridSettings: Partial<GridSettings> }>) => void;
@@ -31,7 +30,6 @@ interface DashboardStore {
     setGroupBy: (id: string, groupBy: string) => void;
 }
 
-// Initialize Zustand store
 export const useDashboardStore = create<DashboardStore>()(
     persist(
         (set) => ({
@@ -52,8 +50,8 @@ export const useDashboardStore = create<DashboardStore>()(
                 },
                 {
                     id: "2",
-                    title:"low invy",
-                    type: 'lowInventory',
+                    title:"ordersTotals",
+                    type: 'ordersTotals',
                     timeFrame: 'all_time',
                     gridSettings: {
                         w: 3,
@@ -66,7 +64,7 @@ export const useDashboardStore = create<DashboardStore>()(
                 },
                 {
                     id: "3",
-                    title:"low invy",
+                    title:"salesTotals",
                     type: 'lowInventory',
                     timeFrame: 'all_time',
                     gridSettings: {
@@ -80,8 +78,8 @@ export const useDashboardStore = create<DashboardStore>()(
                 },
                 {
                     id: "4",
-                    title:"low invy",
-                    type: 'lowInventory',
+                    title:"customersTotals",
+                    type: 'customersTotals',
                     timeFrame: 'all_time',
                     gridSettings: {
                         w: 3,
