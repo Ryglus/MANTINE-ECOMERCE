@@ -1,10 +1,13 @@
 /* https://www.realtimecolors.com/?colors=edeff4-0b0d11-a4aec6-4a4066-8968a1&fonts=Inter-Inter */
 @import '@mantine/core/styles.css';
+@import '@mantine/dates/styles.css';
 @import '@mantine/notifications/styles.css';
 @import '@mantine/carousel/styles.css';
 @import '@mantine/core/styles.layer.css';
 @import '@mantine/charts/styles.css';
 @import 'gridstack/dist/gridstack.min.css';
+
+
 @layer mantine, mantine-datatable;
 
 @tailwind base;

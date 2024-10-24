@@ -237,8 +237,6 @@ export default function DashboardProductsPage() {
                 totalRecords={filteredProducts.length}
                 recordsPerPage={PAGE_SIZE}
                 onPageChange={(newPage: number) => setQueryParams({ page: newPage })}
-                noRecordsText=""
-                emptyState={<div className="!h-0 !p-0"></div>}
             />
 
             <ProductModal

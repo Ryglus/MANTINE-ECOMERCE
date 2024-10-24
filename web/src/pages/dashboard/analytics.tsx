@@ -1,12 +1,17 @@
-import {ActionIcon, Box, Flex, Group, Text, TextInput} from '@mantine/core';
+import React, {useEffect, useState} from 'react';
+import {ActionIcon, Box, Button, Flex, Group, Stack, Text, TextInput} from '@mantine/core';
+import {DatePicker, type DatesRangeValue} from '@mantine/dates';
+// @ts-ignore
+import sortBy from 'lodash/sortBy';
 import {showNotification} from '@mantine/notifications';
-import {IconTrash} from '@tabler/icons-react';
+import {IconChevronUp, IconSelector, IconTrash} from '@tabler/icons-react';
 import {useOrderData} from '../../lib/api/order.api';
-import {DataTable} from 'mantine-datatable';
+import {DataTable, DataTableSortStatus} from 'mantine-datatable';
 import {NumberParam, StringParam, useQueryParams, withDefault} from 'use-query-params';
 import {Order} from '../../lib/api/dto/order.dto';
 import {Product} from '../../lib/api/dto/product.dto';
 import {User} from "../../lib/api/dto/account.dto";
+import dayjs from 'dayjs';
 
 const PAGE_SIZE = 10;
 
@@ -20,7 +25,35 @@ export default function DashboardOrdersPage() {
         date: StringParam,
     });
 
-    const { page, orderId, user, date } = queryParams;
+    const { page, orderId, user } = queryParams;
+
+    const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Order>>({
+        columnAccessor: 'id',
+        direction: 'asc',
+    });
+
+    const [sortedOrders, setSortedOrders] = useState<Order[]>([]);
+    const [dateRange, setDateRange] = useState<DatesRangeValue>();
+
+    useEffect(() => {
+        if (ordersQuery.isSuccess) {
+            const filteredOrders = ordersQuery.data.filter(order => {
+                const matchesOrderId = orderId ? order.id === orderId : true;
+                const matchesUser = user
+                    ? getUserNameById(order.userId).toLowerCase().includes(user.toLowerCase())
+                    : true;
+
+                const matchesDateRange = dateRange && dateRange[0] && dateRange[1]
+                    ? dayjs(order.date).isAfter(dayjs(dateRange[0])) && dayjs(order.date).isBefore(dayjs(dateRange[1]))
+                    : true;
+
+                return matchesOrderId && matchesUser && matchesDateRange;
+            });
+
+            const sortedData = sortBy(filteredOrders, sortStatus.columnAccessor);
+            setSortedOrders(sortStatus.direction === 'desc' ? sortedData.reverse() : sortedData);
+        }
+    }, [ordersQuery.data, orderId, user, dateRange, sortStatus]);
 
     if (ordersQuery.isLoading || usersQuery.isLoading || productsQuery.isLoading) {
         return <div>Loading...</div>;
@@ -30,7 +63,6 @@ export default function DashboardOrdersPage() {
         return <div>Failed to load data</div>;
     }
 
-    const orders: Order[] = ordersQuery.data || [];
     const users: User[] = usersQuery.data || [];
     const products: Product[] = productsQuery.data || [];
 
@@ -44,13 +76,6 @@ export default function DashboardOrdersPage() {
         return product ? `${product.title} - $${product.price}` : 'Unknown Product';
     };
 
-    const filteredOrders = orders.filter(order => {
-        const matchesOrderId = orderId ? order.id === orderId : true;
-        const matchesUser = user ? getUserNameById(order.userId).toLowerCase().includes(user.toLowerCase()) : true;
-        const matchesDate = date ? order.date.startsWith(date) : true;
-        return matchesOrderId && matchesUser && matchesDate;
-    });
-
     const handleOrderDelete = (orderId: number) => {
         showNotification({
             title: 'Order Deleted',
@@ -60,14 +85,13 @@ export default function DashboardOrdersPage() {
         });
     };
 
-
     const handleFilterChange = (filterName: string, value: string | number | null) => {
         setQueryParams({ [filterName]: value, page: 1 });
     };
 
     return (
         <div>
-            <Group mb="md" gap="md" >
+            <Group mb="md" gap="md">
                 <TextInput
                     label="Order ID"
                     value={orderId?.toString() || ''}
@@ -80,12 +104,6 @@ export default function DashboardOrdersPage() {
                     onChange={(e) => handleFilterChange('user', e.currentTarget.value)}
                     placeholder="Filter by User"
                 />
-                <TextInput
-                    label="Date"
-                    value={date || ''}
-                    onChange={(e) => handleFilterChange('date', e.currentTarget.value)}
-                    placeholder="Filter by Date"
-                />
             </Group>
 
             <DataTable<Order>
@@ -95,26 +113,52 @@ export default function DashboardOrdersPage() {
                 striped
                 highlightOnHover
                 minHeight={150}
-                records={filteredOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)}
+                records={sortedOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)}
                 columns={[
                     {
                         accessor: 'id',
                         title: 'Order ID',
-                        cellsClassName: "text-center",
+                        sortable: true,
+                        render: (order: Order) => (
+                            <Text>{order.id}</Text>
+                        ),
                     },
                     {
                         accessor: 'userId',
                         title: 'User',
+                        sortable: true,
                         render: (order: Order) => (
-                            <Text size="sm">{getUserNameById(order.userId)}</Text>
+                            <Text>{getUserNameById(order.userId)}</Text>
                         ),
                     },
                     {
                         accessor: 'date',
                         title: 'Date',
+                        sortable: true,
                         render: (order: Order) => (
-                            <Text size="sm">{order.date}</Text>
+                            <Text>{new Date(order.date).toLocaleString()}</Text>
                         ),
+                        filter: ({ close }) => (
+                            <Stack>
+                                <DatePicker
+                                    maxDate={new Date()}
+                                    type="range"
+                                    value={dateRange}
+                                    onChange={setDateRange}
+                                />
+                                <Button
+                                    disabled={!dateRange}
+                                    variant="light"
+                                    onClick={() => {
+                                        setDateRange(undefined);
+                                        close();
+                                    }}
+                                >
+                                    Clear
+                                </Button>
+                            </Stack>
+                        ),
+                        filtering: Boolean(dateRange),
                     },
                     {
                         accessor: 'products',
@@ -134,23 +178,23 @@ export default function DashboardOrdersPage() {
                         title: 'Actions',
                         render: (order: Order) => (
                             <Flex gap="xs">
-                                <ActionIcon
-                                    size="sm"
-                                    color="red"
-                                    onClick={() => handleOrderDelete(order.id)}
-                                >
+                                <ActionIcon size="sm" color="red" onClick={() => handleOrderDelete(order.id)}>
                                     <IconTrash />
                                 </ActionIcon>
                             </Flex>
                         ),
                     },
                 ]}
+                sortStatus={sortStatus}
+                onSortStatusChange={setSortStatus}
+                sortIcons={{
+                    sorted: <IconChevronUp size={14} />,
+                    unsorted: <IconSelector size={14} />,
+                }}
                 page={page}
-                totalRecords={filteredOrders.length}
+                totalRecords={sortedOrders.length}
                 recordsPerPage={PAGE_SIZE}
                 onPageChange={(newPage: number) => setQueryParams({ page: newPage })}
-                noRecordsText=""
-                emptyState={<div className="!h-0 !p-0"></div>}
             />
         </div>
     );

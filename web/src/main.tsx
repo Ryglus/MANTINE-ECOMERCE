@@ -6,6 +6,7 @@ import {BrowserRouter} from "react-router-dom";
 import {Notifications} from '@mantine/notifications';
 import App from './App';
 import './index.css';
+import 'mantine-datatable/styles.layer.css';
 import {ReactRouter6Adapter} from "use-query-params/adapters/react-router-6";
 import {QueryParamProvider} from "use-query-params";
 
